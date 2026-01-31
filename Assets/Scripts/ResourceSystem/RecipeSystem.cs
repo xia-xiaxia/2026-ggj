@@ -51,9 +51,7 @@ public class RecipeSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 初始化配方 - 在这里定义所有的配方
-    /// </summary>
     void InitializeRecipes()
     {
         allRecipes.Clear();
@@ -100,9 +98,7 @@ public class RecipeSystem : MonoBehaviour
         Debug.Log($"已创建 {allRecipes.Count} 个默认配方");
     }
 
-    /// <summary>
     /// 添加配方
-    /// </summary>
     public void AddRecipe(Recipe recipe)
     {
         if (recipe != null && !allRecipes.Contains(recipe))
@@ -111,33 +107,25 @@ public class RecipeSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 移除配方
-    /// </summary>
     public void RemoveRecipe(Recipe recipe)
     {
         allRecipes.Remove(recipe);
     }
 
-    /// <summary>
     /// 获取所有配方
-    /// </summary>
     public List<Recipe> GetAllRecipes()
     {
         return new List<Recipe>(allRecipes);
     }
 
-    /// <summary>
     /// 根据名称获取配方
-    /// </summary>
     public Recipe GetRecipeByName(string name)
     {
         return allRecipes.Find(r => r.recipeName == name);
     }
 
-    /// <summary>
     /// 尝试执行配方
-    /// </summary>
     public bool TryExecuteRecipe(Recipe recipe)
     {
         if (recipe == null)
@@ -186,9 +174,7 @@ public class RecipeSystem : MonoBehaviour
         return true;
     }
 
-    /// <summary>
     /// 立即完成配方（跳过等待时间）
-    /// </summary>
     public bool ExecuteRecipeInstantly(Recipe recipe)
     {
         if (!TryExecuteRecipe(recipe))
@@ -206,9 +192,7 @@ public class RecipeSystem : MonoBehaviour
         return true;
     }
 
-    /// <summary>
     /// 更新当前工作
-    /// </summary>
     void UpdateCurrentJob()
     {
         if (currentJob == null) return;
@@ -225,9 +209,7 @@ public class RecipeSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 完成当前工作
-    /// </summary>
     void CompleteCurrentJob()
     {
         if (currentJob == null) return;
@@ -286,9 +268,7 @@ public class RecipeSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 开始下一个工作
-    /// </summary>
     void StartNextJob()
     {
         if (craftingQueue.Count == 0) return;
@@ -298,34 +278,26 @@ public class RecipeSystem : MonoBehaviour
         Debug.Log($"开始执行配方: {currentJob.recipe.recipeName}");
     }
 
-    /// <summary>
     /// 获取当前工作信息
-    /// </summary>
     public CraftingJob GetCurrentJob()
     {
         return currentJob;
     }
 
-    /// <summary>
     /// 获取队列中的工作数
-    /// </summary>
     public int GetQueuedJobCount()
     {
         return craftingQueue.Count + (currentJob != null ? 1 : 0);
     }
 
-    /// <summary>
     /// 清空工作队列
-    /// </summary>
     public void ClearQueue()
     {
         craftingQueue.Clear();
         currentJob = null;
     }
 
-    /// <summary>
     /// 获取所有可执行的配方
-    /// </summary>
     public List<Recipe> GetExecutableRecipes()
     {
         List<Recipe> executable = new List<Recipe>();
@@ -356,9 +328,7 @@ public class RecipeSystem : MonoBehaviour
         return executable;
     }
 
-    /// <summary>
     /// 解锁配方
-    /// </summary>
     public void UnlockRecipe(string recipeName)
     {
         Recipe recipe = GetRecipeByName(recipeName);
@@ -370,9 +340,7 @@ public class RecipeSystem : MonoBehaviour
     }
 }
 
-/// <summary>
 /// 工作任务类
-/// </summary>
 [System.Serializable]
 public class CraftingJob
 {

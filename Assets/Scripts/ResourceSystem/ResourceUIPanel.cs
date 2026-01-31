@@ -48,9 +48,7 @@ public class ResourceUIPanel : MonoBehaviour
         UnsubscribeFromEvents();
     }
 
-    /// <summary>
     /// 初始化UI
-    /// </summary>
     void InitializeUI()
     {
         if (ResourceManager.Instance != null)
@@ -66,9 +64,7 @@ public class ResourceUIPanel : MonoBehaviour
         UpdateCraftingStatus();
     }
 
-    /// <summary>
     /// 订阅事件
-    /// </summary>
     void SubscribeToEvents()
     {
         if (ResourceManager.Instance != null)
@@ -84,9 +80,7 @@ public class ResourceUIPanel : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 取消订阅事件
-    /// </summary>
     void UnsubscribeFromEvents()
     {
         if (ResourceManager.Instance != null)
@@ -102,9 +96,7 @@ public class ResourceUIPanel : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 刷新资源显示
-    /// </summary>
     public void RefreshResourceDisplay()
     {
         if (resourceListContainer == null || ResourceManager.Instance == null) return;
@@ -124,9 +116,7 @@ public class ResourceUIPanel : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 创建单个资源项
-    /// </summary>
     void CreateResourceItem(ResourceType type, int quantity)
     {
         if (resourceItemPrefab == null)
@@ -154,9 +144,7 @@ public class ResourceUIPanel : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 刷新配方显示
-    /// </summary>
     public void RefreshRecipeDisplay()
     {
         if (recipeListContainer == null || RecipeSystem.Instance == null) return;
@@ -176,9 +164,7 @@ public class ResourceUIPanel : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 创建单个配方项
-    /// </summary>
     void CreateRecipeItem(Recipe recipe)
     {
         if (recipeItemPrefab == null)
@@ -196,9 +182,7 @@ public class ResourceUIPanel : MonoBehaviour
         recipeUIItems.Add(uiItem);
     }
 
-    /// <summary>
     /// 处理资源变化
-    /// </summary>
     void HandleResourceChanged(ResourceChangedEvent resourceEvent)
     {
         if (resourceUIElements.ContainsKey(resourceEvent.resourceType))
@@ -211,33 +195,25 @@ public class ResourceUIPanel : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 处理配方开始
-    /// </summary>
     void HandleRecipeStarted(Recipe recipe)
     {
         AddLog($"开始: {recipe.recipeName} (耗时: {recipe.processingTime}s)");
     }
 
-    /// <summary>
     /// 处理配方完成
-    /// </summary>
     void HandleRecipeCompleted(Recipe recipe)
     {
         AddLog($"完成: {recipe.recipeName}");
     }
 
-    /// <summary>
     /// 处理合成进度
-    /// </summary>
     void HandleCraftingProgress(float progress)
     {
         UpdateCraftingStatus();
     }
 
-    /// <summary>
     /// 更新合成状态
-    /// </summary>
     void UpdateCraftingStatus()
     {
         if (RecipeSystem.Instance == null) return;
@@ -273,9 +249,7 @@ public class ResourceUIPanel : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 添加日志
-    /// </summary>
     void AddLog(string message)
     {
         if (logText == null) return;
@@ -304,9 +278,7 @@ public class ResourceUIPanel : MonoBehaviour
     }
 }
 
-/// <summary>
 /// 配方UI项
-/// </summary>
 public class RecipeUIItem : MonoBehaviour
 {
     private Recipe recipe;

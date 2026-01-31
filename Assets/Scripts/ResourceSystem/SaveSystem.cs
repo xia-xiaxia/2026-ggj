@@ -41,9 +41,7 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 保存游戏资源
-    /// </summary>
     public bool SaveResources()
     {
         try
@@ -68,9 +66,7 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 加载游戏资源
-    /// </summary>
     public bool LoadResources()
     {
         try
@@ -96,9 +92,7 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 保存游戏状态（包括资源和其他数据）
-    /// </summary>
     public bool SaveGameState()
     {
         try
@@ -121,9 +115,7 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 加载游戏状态
-    /// </summary>
     public bool LoadGameState()
     {
         try
@@ -155,9 +147,7 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 删除所有保存数据
-    /// </summary>
     public bool DeleteAllSaveData()
     {
         try
@@ -176,25 +166,19 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 检查是否存在保存文件
-    /// </summary>
     public bool HasSaveFile()
     {
         return File.Exists(savePath + GAME_STATE_FILE);
     }
 
-    /// <summary>
     /// 获取保存路径
-    /// </summary>
     public string GetSavePath()
     {
         return savePath;
     }
 
-    /// <summary>
     /// 自动保存
-    /// </summary>
     public void AutoSave()
     {
         SaveResources();
@@ -202,9 +186,7 @@ public class SaveSystem : MonoBehaviour
     }
 }
 
-/// <summary>
 /// 游戏状态数据
-/// </summary>
 [System.Serializable]
 public class GameStateData
 {

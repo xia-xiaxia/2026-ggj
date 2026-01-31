@@ -2,9 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-/// <summary>
 /// 资源管理器 - 单例模式，管理所有游戏资源
-/// </summary>
 public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager Instance { get; private set; }
@@ -41,9 +39,7 @@ public class ResourceManager : MonoBehaviour
         InitializeResources();
     }
 
-    /// <summary>
     /// 初始化资源 - 根据initialResources列表设置初始值
-    /// </summary>
     void InitializeResources()
     {
         resources.Clear();
@@ -67,9 +63,7 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 增加资源
-    /// </summary>
     public bool AddResource(ResourceType type, int quantity)
     {
         if (quantity < 0)
@@ -88,9 +82,7 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>
     /// 消耗资源
-    /// </summary>
     public bool RemoveResource(ResourceType type, int quantity)
     {
         if (quantity < 0)
@@ -115,9 +107,7 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>
     /// 设置资源数量（直接设置）
-    /// </summary>
     public void SetResource(ResourceType type, int quantity)
     {
         if (quantity < 0)
@@ -133,25 +123,19 @@ public class ResourceManager : MonoBehaviour
         Log($"设置资源: {type} = {quantity} (来自:{oldQuantity})");
     }
 
-    /// <summary>
     /// 获取资源数量
-    /// </summary>
     public int GetResourceQuantity(ResourceType type)
     {
         return resources.ContainsKey(type) ? resources[type] : 0;
     }
 
-    /// <summary>
     /// 检查是否有足够的资源
-    /// </summary>
     public bool HasEnoughResource(ResourceType type, int quantity)
     {
         return GetResourceQuantity(type) >= quantity;
     }
 
-    /// <summary>
     /// 批量检查资源
-    /// </summary>
     public bool HasEnoughResources(Dictionary<ResourceType, int> requiredResources)
     {
         foreach (var resource in requiredResources)
@@ -164,9 +148,7 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>
     /// 批量添加资源
-    /// </summary>
     public bool AddResources(Dictionary<ResourceType, int> resourcesToAdd)
     {
         foreach (var resource in resourcesToAdd)
@@ -179,9 +161,7 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>
     /// 批量消耗资源
-    /// </summary>
     public bool RemoveResources(Dictionary<ResourceType, int> resourcesToRemove)
     {
         // 先检查是否都有足够的资源
@@ -198,25 +178,19 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>
     /// 获取所有资源的副本
-    /// </summary>
     public Dictionary<ResourceType, int> GetAllResources()
     {
         return new Dictionary<ResourceType, int>(resources);
     }
 
-    /// <summary>
     /// 重置所有资源到初始状态
-    /// </summary>
     public void ResetResources()
     {
         InitializeResources();
     }
 
-    /// <summary>
     /// 清空所有资源
-    /// </summary>
     public void ClearAllResources()
     {
         resources.Clear();
@@ -227,9 +201,7 @@ public class ResourceManager : MonoBehaviour
         Log("所有资源已清空");
     }
 
-    /// <summary>
     /// 输出所有资源信息
-    /// </summary>
     public void LogAllResources()
     {
         string output = "=== 当前资源状态 ===\n";
@@ -240,25 +212,19 @@ public class ResourceManager : MonoBehaviour
         Debug.Log(output);
     }
 
-    /// <summary>
     /// 获取交易日志
-    /// </summary>
     public List<string> GetTransactionLog()
     {
         return new List<string>(transactionLog);
     }
 
-    /// <summary>
     /// 清空交易日志
-    /// </summary>
     public void ClearTransactionLog()
     {
         transactionLog.Clear();
     }
 
-    /// <summary>
     /// 内部日志记录
-    /// </summary>
     private void Log(string message)
     {
         if (!enableLogging) return;
@@ -274,9 +240,7 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 导出资源数据为JSON格式
-    /// </summary>
     public string ExportToJSON()
     {
         ResourceExportData exportData = new ResourceExportData();
@@ -287,9 +251,7 @@ public class ResourceManager : MonoBehaviour
         return JsonUtility.ToJson(exportData);
     }
 
-    /// <summary>
     /// 从JSON导入资源数据
-    /// </summary>
     public void ImportFromJSON(string json)
     {
         try
@@ -311,9 +273,7 @@ public class ResourceManager : MonoBehaviour
     }
 }
 
-/// <summary>
 /// 导出数据容器
-/// </summary>
 [System.Serializable]
 public class ResourceExportData
 {

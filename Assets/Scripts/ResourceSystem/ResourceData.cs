@@ -38,9 +38,7 @@ public enum ResourceType
     engMod
 }
 
-/// <summary>
 /// 资源数据 - 存储单个资源的信息
-/// </summary>
 [System.Serializable]
 public class ResourceData
 {
@@ -50,9 +48,7 @@ public class ResourceData
     public string description;
 }
 
-/// <summary>
 /// 配方项 - 配方中的单个资源需求或产出
-/// </summary>
 [System.Serializable]
 public class RecipeItem
 {
@@ -66,9 +62,7 @@ public class RecipeItem
     }
 }
 
-/// <summary>
 /// 配方数据 - 用于资源转换/合成
-/// </summary>
 [System.Serializable]
 public class Recipe
 {
@@ -78,33 +72,23 @@ public class Recipe
     [SerializeField]
     public string description;
     
-    /// <summary>
     /// 需要的输入资源
-    /// </summary>
     [SerializeField]
     public List<RecipeItem> inputs = new List<RecipeItem>();
     
-    /// <summary>
     /// 产出的资源
-    /// </summary>
     [SerializeField]
     public List<RecipeItem> outputs = new List<RecipeItem>();
     
-    /// <summary>
     /// 需要的时间（秒）
-    /// </summary>
     [SerializeField]
     public float processingTime = 1f;
     
-    /// <summary>
     /// 需要的人力资源
-    /// </summary>
     [SerializeField]
     public int requiredLaborForce = 1;
     
-    /// <summary>
     /// 是否已解锁
-    /// </summary>
     [SerializeField]
     public bool isUnlocked = true;
 
@@ -123,9 +107,7 @@ public class Recipe
         outputs = new List<RecipeItem>();
     }
 
-    /// <summary>
     /// 检查是否满足配方的输入需求
-    /// </summary>
     public bool CanExecute(Dictionary<ResourceType, int> availableResources)
     {
         foreach (var input in inputs)
@@ -139,9 +121,7 @@ public class Recipe
         return true;
     }
 
-    /// <summary>
     /// 获取配方的调试字符串
-    /// </summary>
     public string GetDebugInfo()
     {
         string info = $"Recipe: {recipeName}\n";
@@ -160,9 +140,7 @@ public class Recipe
     }
 }
 
-/// <summary>
 /// 游戏事件 - 资源变化时触发
-/// </summary>
 public class ResourceChangedEvent
 {
     public ResourceType resourceType;

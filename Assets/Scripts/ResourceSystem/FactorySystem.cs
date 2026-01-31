@@ -35,25 +35,17 @@ public class FactoryConfig
     public string factoryName;
     public string description;
     
-    /// <summary>
     /// 建筑条件 - 建造所需的资源
-    /// </summary>
     public Dictionary<ResourceType, int> buildingRequirements = new Dictionary<ResourceType, int>();
     
-    /// <summary>
     /// 生产周期（秒）
-    /// </summary>
     public float productionTime = 1f;
     
-    /// <summary>
     /// 是否已建造
-    /// </summary>
     [SerializeField]
     public bool isBuilt = false;
     
-    /// <summary>
     /// 生产配方
-    /// </summary>
     public Recipe productionRecipe;
 
     public FactoryConfig(FactoryType type, string name)
@@ -76,9 +68,7 @@ public class FactoryConfig
     }
 }
 
-/// <summary>
 /// 工厂实例
-/// </summary>
 [System.Serializable]
 public class FactoryInstance
 {
@@ -103,9 +93,7 @@ public class FactoryInstance
     }
 }
 
-/// <summary>
 /// 工厂管理系统
-/// </summary>
 public class FactorySystem : MonoBehaviour
 {
     public static FactorySystem Instance { get; private set; }
@@ -143,9 +131,7 @@ public class FactorySystem : MonoBehaviour
         UpdateRunningFactories();
     }
 
-    /// <summary>
     /// 初始化所有工厂配置
-    /// </summary>
     void InitializeFactories()
     {
         factoryConfigs.Clear();
@@ -249,9 +235,7 @@ public class FactorySystem : MonoBehaviour
         Debug.Log($"已初始化 {factoryConfigs.Count} 个工厂配置");
     }
 
-    /// <summary>
     /// 创建工厂配置
-    /// </summary>
     void CreateFactory(FactoryType type, string name, Dictionary<ResourceType, int> buildReq, Dictionary<ResourceType, int> production, float time)
     {
         FactoryConfig config = new FactoryConfig(type, name);
@@ -272,9 +256,7 @@ public class FactorySystem : MonoBehaviour
         factoryConfigs[type] = config;
     }
 
-    /// <summary>
     /// 建造工厂
-    /// </summary>
     public bool BuildFactory(FactoryType type)
     {
         if (!factoryConfigs.ContainsKey(type))
@@ -285,11 +267,11 @@ public class FactorySystem : MonoBehaviour
 
         FactoryConfig config = factoryConfigs[type];
 
-        if (config.isBuilt)
-        {
-            Debug.LogWarning($"工厂 {config.factoryName} 已经建造过了");
-            return false;
-        }
+        // if (config.isBuilt)
+        // {
+        //     Debug.LogWarning($"工厂 {config.factoryName} 已经建造过了");
+        //     return false;
+        // }
 
         // 检查资源
         if (!ResourceManager.Instance.HasEnoughResources(config.buildingRequirements))
@@ -317,9 +299,7 @@ public class FactorySystem : MonoBehaviour
         return true;
     }
 
-    /// <summary>
     /// 启动工厂生产
-    /// </summary>
     public bool StartFactoryOperation(FactoryType type)
     {
         // 找到对应的工厂实例
@@ -334,9 +314,7 @@ public class FactorySystem : MonoBehaviour
         return StartFactoryOperation(instance);
     }
 
-    /// <summary>
     /// 启动工厂生产（指定实例）
-    /// </summary>
     public bool StartFactoryOperation(FactoryInstance instance)
     {
         if (instance == null || !instance.config.isBuilt)
@@ -380,9 +358,7 @@ public class FactorySystem : MonoBehaviour
         return true;
     }
 
-    /// <summary>
     /// 更新运行中的工厂
-    /// </summary>
     void UpdateRunningFactories()
     {
         List<FactoryInstance> completedFactories = new List<FactoryInstance>();
@@ -405,9 +381,7 @@ public class FactorySystem : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// 完成工厂生产
-    /// </summary>
     void CompleteFactoryOperation(FactoryInstance instance)
     {
         if (instance == null) return;
@@ -428,41 +402,31 @@ public class FactorySystem : MonoBehaviour
         Debug.Log($"工厂完成生产: {instance.config.factoryName}");
     }
 
-    /// <summary>
     /// 获取所有已建造的工厂
-    /// </summary>
     public List<FactoryInstance> GetBuiltFactories()
     {
         return new List<FactoryInstance>(builtFactories);
     }
 
-    /// <summary>
     /// 获取工厂配置
-    /// </summary>
     public FactoryConfig GetFactoryConfig(FactoryType type)
     {
         return factoryConfigs.ContainsKey(type) ? factoryConfigs[type] : null;
     }
 
-    /// <summary>
     /// 获取所有工厂配置
-    /// </summary>
     public Dictionary<FactoryType, FactoryConfig> GetAllFactoryConfigs()
     {
         return new Dictionary<FactoryType, FactoryConfig>(factoryConfigs);
     }
 
-    /// <summary>
     /// 查询工厂建造状态
-    /// </summary>
     public bool IsFactoryBuilt(FactoryType type)
     {
         return factoryConfigs.ContainsKey(type) && factoryConfigs[type].isBuilt;
     }
 
-    /// <summary>
     /// 获取工厂运行状态
-    /// </summary>
     public string GetFactoryStatus(FactoryType type)
     {
         FactoryInstance instance = builtFactories.Find(f => f.config.factoryType == type);
