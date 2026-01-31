@@ -99,7 +99,7 @@ public class SimpleResourceUI : MonoBehaviour
         TextMeshProUGUI quantityText = item.transform.Find("QuantityText")?.GetComponent<TextMeshProUGUI>();
         if (quantityText != null)
         {
-            quantityText.text = quantity.ToString();
+            quantityText.text = ": " + quantity.ToString();
             quantityText.color = quantity > 0 ? Color.blue : Color.gray;
         }
 

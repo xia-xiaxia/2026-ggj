@@ -9,7 +9,7 @@ public class FactoryDataLoader : MonoBehaviour
     public TextAsset factoryDataJson; // 拖入JSON文件
     
     [Header("工厂预制体")]
-    public GameObject factoryPrefab; // SimpleFactory预制体
+    public GameObject factoryPrefab; // TurnBasedFactory预制体
     public Transform factoryContainer; // 工厂容器
 
     void Start()
@@ -46,15 +46,14 @@ public class FactoryDataLoader : MonoBehaviour
         GameObject factoryObj = Instantiate(factoryPrefab, factoryContainer);
         factoryObj.name = data.factoryName;
 
-        SimpleFactory factory = factoryObj.GetComponent<SimpleFactory>();
+        TurnBasedFactory factory = factoryObj.GetComponent<TurnBasedFactory>();
         if (factory == null)
         {
-            factory = factoryObj.AddComponent<SimpleFactory>();
+            factory = factoryObj.AddComponent<TurnBasedFactory>();
         }
 
         // 设置工厂配置
         factory.factoryName = data.factoryName;
-        factory.productionCycleTime = data.productionTime;
 
         // 设置建造成本
         factory.buildCosts = new List<ResourceCost>();
@@ -98,12 +97,15 @@ public class FactoryDataLoader : MonoBehaviour
 
             factory.recipes.Add(recipe);
         }
+
+        // 尝试建造（消耗建造成本），失败会打印原因
+        factory.Build();
     }
 
     /// 解析资源类型字符串
     ResourceType ParseResourceType(string typeName)
     {
-        if (System.Enum.TryParse(typeName, out ResourceType type))
+        if (System.Enum.TryParse(typeName, true, out ResourceType type))
         {
             return type;
         }

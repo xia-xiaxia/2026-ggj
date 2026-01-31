@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using Mono.Cecil;
+using UnityEngine.InputSystem; 
 
 /// 资源管理器 - 单例模式，管理所有游戏资源
 public class ResourceManager : MonoBehaviour
@@ -60,6 +62,32 @@ public class ResourceManager : MonoBehaviour
         if (enableLogging)
         {
             LogAllResources();
+        }
+    }
+
+    void Update()
+    {
+        // 按r键
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            AddResource(ResourceType.people, 1);
+        }
+    
+        // 按t键
+        if (Keyboard.current.tKey.wasPressedThisFrame)
+        {
+            RemoveResource(ResourceType.people, 1);
+        }
+    
+        // 按y键
+        if (Keyboard.current.yKey.wasPressedThisFrame)
+        {   
+            AddResources(new Dictionary<ResourceType, int>
+            {
+                { ResourceType.engMod, 10 },
+                { ResourceType.acid, 5 },
+                { ResourceType.Mask1, 2 }
+            });
         }
     }
 

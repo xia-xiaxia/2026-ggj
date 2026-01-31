@@ -1,0 +1,392 @@
+{
+  "factories": [
+    {
+      "factoryType": "hydroThermal",
+      "factoryName": "水热发电厂",
+      "englishName": "hydroThermal",
+      "category": "发电",
+      "description": "利用硫酸盐湖的水热热泉，进行水热发电。是能期可靠的力量来源",
+      "remarks": "靠近沼湖",
+      "landOccupancy": 6,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 },
+        { "resourceType": "copper", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "发电",
+          "inputs": [],
+          "outputs": [
+            { "resourceType": "Electricity", "quantity": 12 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "dryRock",
+      "factoryName": "干热岩电厂",
+      "englishName": "dryRock",
+      "category": "发电",
+      "description": "钻入地下，选过深层干热岩进行发电；是能期可靠的电力来源",
+      "remarks": "靠近不沼湖",
+      "landOccupancy": 4,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 4 },
+        { "resourceType": "alum", "quantity": 3 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "发电",
+          "inputs": [],
+          "outputs": [
+            { "resourceType": "Electricity", "quantity": 32 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "pvFarm",
+      "factoryName": "光伏发电厂",
+      "englishName": "pvFarm",
+      "category": "发电",
+      "description": "通过太阳能发电。占地很积太大但产出可变观；会随意得季节变化",
+      "remarks": "靠近区域",
+      "landOccupancy": 9,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 },
+        { "resourceType": "solarMod", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "发电",
+          "inputs": [],
+          "outputs": [
+            { "resourceType": "Electricity", "quantity": 20 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "acidTower",
+      "factoryName": "酸素捕集塔",
+      "englishName": "acidTower",
+      "category": "采集",
+      "description": "在库边设立泥湖塔、从鸟鸦中给硫酸酸",
+      "remarks": "靠近沼湖",
+      "landOccupancy": 2,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 1 },
+        { "resourceType": "iron", "quantity": 1 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "采集硫酸",
+          "inputs": [],
+          "outputs": [
+            { "resourceType": "acid", "quantity": 2 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "lakeTreat",
+      "factoryName": "湖水处理厂",
+      "englishName": "lakeTreat",
+      "category": "采集",
+      "description": "抽取火山湖的水，产出磁酸升达流港港",
+      "remarks": "靠近沼湖",
+      "landOccupancy": 4,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "处理湖水",
+          "inputs": [
+            { "resourceType": "Electricity", "quantity": 2 }
+          ],
+          "outputs": [
+            { "resourceType": "acid", "quantity": 2 },
+            { "resourceType": "lakeMud", "quantity": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "mudDigger",
+      "factoryName": "泥底泥挖厂",
+      "englishName": "mudDigger",
+      "category": "采集",
+      "description": "经过专业处理能控制淤泥，可以来调容全金属元素的弥底泥",
+      "remarks": "靠近沼湖",
+      "landOccupancy": 6,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "挖掘湖底泥",
+          "inputs": [
+            { "resourceType": "Electricity", "quantity": 2 }
+          ],
+          "outputs": [
+            { "resourceType": "lakeMud", "quantity": 2 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "oreMine",
+      "factoryName": "矿物采掘场",
+      "englishName": "oreMine",
+      "category": "采集",
+      "description": "采掘地表石矿与火山矿石与火山岩",
+      "remarks": "",
+      "landOccupancy": 9,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 3 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "采矿",
+          "inputs": [
+            { "resourceType": "Electricity", "quantity": 2 }
+          ],
+          "outputs": [
+            { "resourceType": "volcOre", "quantity": 1 },
+            { "resourceType": "ignRock", "quantity": 2 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "thermoFarm",
+      "factoryName": "喷热蓄热农场",
+      "englishName": "thermoFarm",
+      "category": "采集",
+      "description": "在虛储构设施打启门的喷热蓄热農。经过处理现成生物质料",
+      "remarks": "靠近沼湖",
+      "landOccupancy": 4,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "种植生物质",
+          "inputs": [
+            { "resourceType": "Electricity", "quantity": 2 },
+            { "resourceType": "acid", "quantity": 1 }
+          ],
+          "outputs": [
+            { "resourceType": "biomass", "quantity": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "cuFac",
+      "factoryName": "铜精炼厂",
+      "englishName": "cuFac",
+      "category": "加工",
+      "description": "使用硫酸精炼火山矿化；产出铜和混合铁与青铜牌电解液",
+      "remarks": "",
+      "landOccupancy": 6,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "精炼铜",
+          "inputs": [
+            { "resourceType": "Electricity", "quantity": 3 },
+            { "resourceType": "volcOre", "quantity": 1 },
+            { "resourceType": "acid", "quantity": 1 }
+          ],
+          "outputs": [
+            { "resourceType": "copper", "quantity": 2 },
+            { "resourceType": "WasteElectro", "quantity": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "feFac",
+      "factoryName": "铁回收厂",
+      "englishName": "feFac",
+      "category": "加工",
+      "description": "提取废电解液中的铁元素；产出肉净的铁、而产力金属电解液",
+      "remarks": "",
+      "landOccupancy": 6,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "回收铁",
+          "inputs": [
+            { "resourceType": "Electricity", "quantity": 3 },
+            { "resourceType": "WasteElectro", "quantity": 1 }
+          ],
+          "outputs": [
+            { "resourceType": "iron", "quantity": 2 },
+            { "resourceType": "richElectro", "quantity": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "alFac",
+      "factoryName": "铝提取厂",
+      "englishName": "alFac",
+      "category": "加工",
+      "description": "使用硫酸浸火山岩种的铝元素。制造铝硅砂与硅砂",
+      "remarks": "",
+      "landOccupancy": 6,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "提取铝",
+          "inputs": [
+            { "resourceType": "Electricity", "quantity": 1 },
+            { "resourceType": "ignRock", "quantity": 1 },
+            { "resourceType": "acid", "quantity": 2 }
+          ],
+          "outputs": [
+            { "resourceType": "alum", "quantity": 1 },
+            { "resourceType": "silica", "quantity": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "mulFac",
+      "factoryName": "联合冶炼厂",
+      "englishName": "mulFac",
+      "category": "加工",
+      "description": "以镜铜炼为与力方式熔铸泥底。获得铜含纲、钡、硅、硅砂",
+      "remarks": "",
+      "landOccupancy": 9,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "冶炼",
+          "inputs": [
+            { "resourceType": "Electricity", "quantity": 2 },
+            { "resourceType": "lakeMud", "quantity": 1 }
+          ],
+          "outputs": [
+            { "resourceType": "copper", "quantity": 1 },
+            { "resourceType": "iron", "quantity": 1 },
+            { "resourceType": "silica", "quantity": 1 },
+            { "resourceType": "alum", "quantity": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "bioFac",
+      "factoryName": "有机化工厂",
+      "englishName": "bioFac",
+      "category": "加工",
+      "description": "制造防护面料的化工厂。对环境有较高要求",
+      "remarks": "",
+      "landOccupancy": 9,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "制造防护面料",
+          "inputs": [
+            { "resourceType": "Electricity", "quantity": 1 },
+            { "resourceType": "biomass", "quantity": 1 }
+          ],
+          "outputs": [
+            { "resourceType": "protectFabric", "quantity": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "matFac",
+      "factoryName": "建筑材料厂",
+      "englishName": "matFac",
+      "category": "加工",
+      "description": "用于制造工业化的防护用「硅砂块」符合建筑标准",
+      "remarks": "",
+      "landOccupancy": 6,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 1 },
+        { "resourceType": "silica", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "制造工程模块",
+          "inputs": [
+            { "resourceType": "Electricity", "quantity": 1 },
+            { "resourceType": "silica", "quantity": 2 },
+            { "resourceType": "iron", "quantity": 2 },
+            { "resourceType": "alum", "quantity": 1 }
+          ],
+          "outputs": [
+            { "resourceType": "engMod", "quantity": 6 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "pvFac",
+      "factoryName": "光伏制造厂",
+      "englishName": "pvFac",
+      "category": "组装",
+      "description": "制造液态酸解离环速度膜型硅光伏板；用于光伏发电",
+      "remarks": "",
+      "landOccupancy": 6,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "制造光伏模块",
+          "inputs": [
+            { "resourceType": "Electricity", "quantity": 3 },
+            { "resourceType": "richElectro", "quantity": 1 },
+            { "resourceType": "alum", "quantity": 1 },
+            { "resourceType": "iron", "quantity": 1 }
+          ],
+          "outputs": [
+            { "resourceType": "solarMod", "quantity": 2 }
+          ]
+        }
+      ]
+    },
+    {
+      "factoryType": "mask1Fac",
+      "factoryName": "Mask-1工厂",
+      "englishName": "mask1Fac",
+      "category": "组装",
+      "description": "为了应对日益加剧的灾难活动、Mask-1工厂「可以防止存有不错的防护作用的Mask-1面罩」",
+      "remarks": "",
+      "landOccupancy": 9,
+      "buildCosts": [
+        { "resourceType": "engMod", "quantity": 2 }
+      ],
+      "recipes": [
+        {
+          "recipeName": "生产Mask-1",
+          "inputs": [
+            { "resourceType": "protectFabric", "quantity": 1 },
+            { "resourceType": "iron", "quantity": 1 }
+          ],
+          "outputs": [
+            { "resourceType": "Mask1", "quantity": 8 }
+          ]
+        }
+      ]
+    }
+  ]
+}

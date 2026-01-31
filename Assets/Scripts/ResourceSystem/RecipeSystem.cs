@@ -2,9 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-/// <summary>
 /// 配方系统 - 管理资源的转换和合成
-/// </summary>
 public class RecipeSystem : MonoBehaviour
 {
     public static RecipeSystem Instance { get; private set; }
