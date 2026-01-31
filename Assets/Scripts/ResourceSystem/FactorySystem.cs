@@ -67,7 +67,7 @@ public class FactoryConfig
     {
         string info = $"Factory: {factoryName} ({factoryType})\n";
         info += $"Built: {isBuilt}\n";
-        info += "Building Requirements:\n";
+        info += "Factory Requirements:\n";
         foreach (var req in buildingRequirements)
         {
             info += $"  - {req.Key}: {req.Value}\n";
