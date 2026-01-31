@@ -22,6 +22,7 @@ public class TurnBasedFactory : MonoBehaviour
     private bool isBuilt = false;
     private bool hasInvestedThisTurn = false; // 本回合是否已投料
     private bool hasProductionToHarvest = false; // 是否有产出待收获
+    private int pendingProductionCount = 0; // 本回合投料份数
 
     void Start()
     {
@@ -75,6 +76,12 @@ public class TurnBasedFactory : MonoBehaviour
     /// 投料（每回合调用一次）- 立即扣资源，标记为待收获
     public bool Invest()
     {
+        return Invest(1);
+    }
+
+    /// 投料（按份数）- 立即扣资源，标记为待收获
+    public bool Invest(int count)
+    {
         if (!isBuilt)
         {
             Debug.Log($"{factoryName} 未建造");
@@ -87,6 +94,12 @@ public class TurnBasedFactory : MonoBehaviour
             return false;
         }
 
+        if (count <= 0)
+        {
+            Debug.LogWarning($"{factoryName} 投料份数无效：{count}");
+            return false;
+        }
+
         if (recipes.Count == 0)
         {
             Debug.Log($"{factoryName} 没有可用的配方");
@@ -96,20 +109,21 @@ public class TurnBasedFactory : MonoBehaviour
         ProductionRecipe recipe = recipes[currentRecipeIndex];
 
         // 检查资源是否足够
-        if (!CanProduce(recipe))
+        if (!CanProduce(recipe, count))
         {
             Debug.Log($"{factoryName} 资源不足，无法投料");
             return false;
         }
 
         // 立即扣除输入资源
-        ConsumeInputs(recipe);
+        ConsumeInputs(recipe, count);
 
         // 标记为已投料和待收获
         hasInvestedThisTurn = true;
         hasProductionToHarvest = true;
+        pendingProductionCount = count;
 
-        Debug.Log($"{factoryName} 投料成功，配方：{recipe.recipeName}");
+        Debug.Log($"{factoryName} 投料成功，配方：{recipe.recipeName}，份数：{count}");
         return true;
     }
 
@@ -121,20 +135,22 @@ public class TurnBasedFactory : MonoBehaviour
         ProductionRecipe recipe = recipes[currentRecipeIndex];
         
         // 产出资源
-        ProduceOutputs(recipe);
+        ProduceOutputs(recipe, pendingProductionCount > 0 ? pendingProductionCount : 1);
 
         // 重置待收获标志
         hasProductionToHarvest = false;
+        pendingProductionCount = 0;
 
         Debug.Log($"{factoryName} 回合结束，自动收获");
     }
 
     /// 检查是否可以生产
-    bool CanProduce(ProductionRecipe recipe)
+    bool CanProduce(ProductionRecipe recipe, int count)
     {
         foreach (var input in recipe.inputs)
         {
-            if (ResourceManager.Instance.GetResourceQuantity(input.resourceType) < input.quantity)
+            int required = input.quantity * count;
+            if (ResourceManager.Instance.GetResourceQuantity(input.resourceType) < required)
             {
                 return false;
             }
@@ -143,20 +159,22 @@ public class TurnBasedFactory : MonoBehaviour
     }
 
     /// 消耗输入资源
-    void ConsumeInputs(ProductionRecipe recipe)
+    void ConsumeInputs(ProductionRecipe recipe, int count)
     {
         foreach (var input in recipe.inputs)
         {
-            ResourceManager.Instance.RemoveResource(input.resourceType, input.quantity);
+            int required = input.quantity * count;
+            ResourceManager.Instance.RemoveResource(input.resourceType, required);
         }
     }
 
     /// 产出资源
-    void ProduceOutputs(ProductionRecipe recipe)
+    void ProduceOutputs(ProductionRecipe recipe, int count)
     {
         foreach (var output in recipe.outputs)
         {
-            ResourceManager.Instance.AddResource(output.resourceType, output.quantity);
+            int amount = output.quantity * count;
+            ResourceManager.Instance.AddResource(output.resourceType, amount);
         }
     }
 
