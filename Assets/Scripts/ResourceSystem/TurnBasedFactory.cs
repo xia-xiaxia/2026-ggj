@@ -46,11 +46,11 @@ public class TurnBasedFactory : MonoBehaviour
     /// 建造工厂
     public bool Build()
     {
-        if (isBuilt)
-        {
-            Debug.Log($"{factoryName} 已经建造过了");
-            return false;
-        }
+        // if (isBuilt)
+        // {
+        //     Debug.Log($"{factoryName} 已经建造过了");
+        //     return false;
+        // }
 
         // 检查建造资源
         foreach (var cost in buildCosts)

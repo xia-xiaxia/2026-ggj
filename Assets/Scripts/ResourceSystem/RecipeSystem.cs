@@ -56,9 +56,7 @@ public class RecipeSystem : MonoBehaviour
         CreateDefaultRecipes();
     }
 
-    /// <summary>
     /// 创建默认配方
-    /// </summary>
     void CreateDefaultRecipes()
     {
         // 示例：Mask-1合成配方
