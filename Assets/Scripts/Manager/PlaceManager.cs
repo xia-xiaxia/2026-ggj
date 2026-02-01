@@ -83,7 +83,7 @@ public class PlaceManager : MonoBehaviour
                 if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
                 {
                     toDeleteObj = hit.collider.gameObject;
-                    var material = toDeleteObj.GetComponentInChildren<Renderer>(true).material;
+                    var material = toDeleteObj.GetComponentInChildren<Renderer>(false).material;
                     material.color = Color.red;
                 }
                 return;
@@ -94,7 +94,7 @@ public class PlaceManager : MonoBehaviour
         {
             if (toDeleteObj != null)
             {
-                var material = toDeleteObj.GetComponentInChildren<Renderer>(true).material;
+                var material = toDeleteObj.GetComponentInChildren<Renderer>().material;
                 material.color = Color.white;
             }
             var _toDeleteObj = toDeleteObj;
@@ -124,9 +124,9 @@ public class PlaceManager : MonoBehaviour
                             Vector3 localMax = grid.InverseTransformPoint(renderer.bounds.max);
 
                             int l = Mathf.FloorToInt(localMin.x);
-                            int r = Mathf.FloorToInt(localMax.x);
+                            int r = Mathf.CeilToInt(localMax.x) - 1;
                             int b = Mathf.FloorToInt(localMin.z);
-                            int t = Mathf.FloorToInt(localMax.z);
+                            int t = Mathf.CeilToInt(localMax.z) - 1;
 
                             // 限定到网格范围内
                             int width = gm.width;
@@ -138,7 +138,10 @@ public class PlaceManager : MonoBehaviour
 
                             for (int x = l; x <= r; x++)
                                 for (int y = b; y <= t; y++)
+                                {
+                                    Debug.Log(x + "," + y);
                                     gm.gridUsage[x][y] = GridManager.CellUsage.Empty;
+                                }
                         }
                     }
                     Destroy(target);
