@@ -12,7 +12,7 @@ public class PlaceManager : MonoBehaviour
     private Vector2 curScreenPos;
     private Vector2 clickStartScreenPos;
     private float maxClickMoveDistance = 10f;
-    private GameObject toDeleteObj;
+    private GameObject toSelectObj;
 
 
 
@@ -69,23 +69,37 @@ public class PlaceManager : MonoBehaviour
         var placeItemListManager = PlaceItemListManager.GetInstance();
         if (placeItemListManager == null)
             return;
-        if (placeItemListManager.selectedFactory == null && !placeItemListManager.isDeleteMode)
-            return;
 
         if (context.performed)
         {
             clickStartScreenPos = curScreenPos;
             // 删除预览
-            if (placeItemListManager.isDeleteMode)
+            if (placeItemListManager.curPlaceMode == PlaceItemListManager.placeMode.Delete)
             {
                 int factoryLayer = LayerMask.NameToLayer("Factory");
                 Ray ray = Camera.main.ScreenPointToRay(curScreenPos);
                 int layerMask = 1 << factoryLayer;
                 if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
                 {
-                    toDeleteObj = hit.collider.gameObject;
-                    var material = toDeleteObj.GetComponentInChildren<Renderer>(false).material;
+                    toSelectObj = hit.collider.gameObject;
+                    var material = toSelectObj.GetComponentInChildren<Renderer>(false).material;
                     material.color = Color.red;
+                }
+                return;
+            }
+            // 投料预览
+            else if (placeItemListManager.curPlaceMode == PlaceItemListManager.placeMode.Input)
+            {
+                int factoryLayer = LayerMask.NameToLayer("Factory");
+                Ray ray = Camera.main.ScreenPointToRay(curScreenPos);
+                int layerMask = 1 << factoryLayer;
+                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
+                {
+                    if (hit.collider.gameObject.name == "Walkway")
+                        return;
+                    toSelectObj = hit.collider.gameObject;
+                    var material = toSelectObj.GetComponentInChildren<Renderer>(false).material;
+                    material.color = Color.yellow;
                 }
                 return;
             }
@@ -93,17 +107,17 @@ public class PlaceManager : MonoBehaviour
         }
         else if (context.canceled)
         {
-            if (toDeleteObj != null)
+            if (toSelectObj != null)
             {
-                var material = toDeleteObj.GetComponentInChildren<Renderer>().material;
+                var material = toSelectObj.GetComponentInChildren<Renderer>().material;
                 material.color = Color.white;
             }
-            var _toDeleteObj = toDeleteObj;
-            toDeleteObj = null;
+            var _toSelectObj = toSelectObj;
+            toSelectObj = null;
             if (Vector2.Distance(clickStartScreenPos, curScreenPos) > maxClickMoveDistance)
                 return;
             // 删除模式
-            if (placeItemListManager.isDeleteMode)
+            if (placeItemListManager.curPlaceMode == PlaceItemListManager.placeMode.Delete && _toSelectObj != null)
             {
                 int factoryLayer = LayerMask.NameToLayer("Factory");
                 Ray ray = Camera.main.ScreenPointToRay(curScreenPos);
@@ -111,7 +125,7 @@ public class PlaceManager : MonoBehaviour
                 if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
                 {
                     GameObject target = hit.collider.gameObject;
-                    if (target != _toDeleteObj)
+                    if (target != _toSelectObj)
                         return;
 
                     var gm = GridManager.GetInstance();
@@ -190,66 +204,86 @@ public class PlaceManager : MonoBehaviour
                 }
                 return;
             }
-            // 放置模式
-            var previewObj = placeItemListManager.selectedFactory.previewObj;
-            var size = placeItemListManager.selectedFactory.size;
-            var hght = placeItemListManager.selectedFactory.height;
-            var placePrefab = placeItemListManager.selectedFactory.factoryPrefab;
-            int left = mouseCoord.x - Mathf.FloorToInt(size.x / 2f);
-            int right = left + size.x - 1;
-            int bottom = mouseCoord.y - Mathf.FloorToInt(size.y / 2f);
-            int top = bottom + size.y - 1;
-            if (!Check(left, right, bottom, top, PlaceItemListManager.GetInstance().selectedFactory.need))
-                return;
-            var go = Instantiate(placePrefab, previewObj.transform.position, previewObj.transform.rotation);
-            go.name = placePrefab.name;
-            // 放置道路时，更新道路及临路的网格和表现
-            if (placeItemListManager.selectedFactory.need == FactoryUIItem.PlaceNeed.None)
+            // 投料模式
+            else if (placeItemListManager.curPlaceMode == PlaceItemListManager.placeMode.Input && _toSelectObj != null)
             {
-                GridManager.GetInstance().gridUsage[left][bottom] = GridManager.CellUsage.Walkway;
-                SetWalkway(left, bottom, go);
-                // 更新四邻居的道路表现
-                var gm = GridManager.GetInstance();
-                int width = gm.width;
-                int height = gm.height;
-                // 四个方向偏移
-                (int dx, int dy)[] dirs = new (int, int)[] { (0, 1), (0, -1), (-1, 0), (1, 0) };
-                foreach (var (dx, dy) in dirs)
+                int factoryLayer = LayerMask.NameToLayer("Factory");
+                Ray ray = Camera.main.ScreenPointToRay(curScreenPos);
+                int layerMask = 1 << factoryLayer;
+                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
                 {
-                    int nx = left + dx;
-                    int ny = bottom + dy;
-                    if (nx < 0 || nx >= width || ny < 0 || ny >= height)
-                        continue;
-                    if (gm.gridUsage[nx][ny] != GridManager.CellUsage.Walkway)
-                        continue;
-
-                    // 在网格中心位置进行物体查找（用小范围重叠检测）
-                    Vector3 cellLocal = new Vector3(nx + 0.5f, 0, ny + 0.5f);
-                    Vector3 worldCenter = grid.TransformPoint(cellLocal);
-                    float radius = Mathf.Max(0.1f, gm.cellSize * 0.45f);
-                    Collider[] cols = Physics.OverlapSphere(worldCenter, radius);
-                    GameObject neighborGo = null;
-                    int factoryLayer = LayerMask.NameToLayer("Factory");
-                    foreach (var col in cols)
-                    {
-                        if (col == null) continue;
-                        // 取根对象，避免取到子碰撞体
-                        var root = col.transform.root.gameObject;
-                        if (root == null) continue;
-                        // 忽略新放置的 go 自身（位置可能重合）
-                        if (root == go) continue;
-                        if (factoryLayer == -1 || root.layer != factoryLayer) continue;
-                        neighborGo = root;
-                        break;
-                    }
-                    if (neighborGo != null)
-                        SetWalkway(nx, ny, neighborGo);
+                    GameObject target = hit.collider.gameObject;
+                    if (target != _toSelectObj)
+                        return;
+                    // target投料目标
+                    return;
                 }
             }
-            else
-                for (int x = left; x <= right; x++)
-                    for (int y = bottom; y <= top; y++)
-                        GridManager.GetInstance().gridUsage[x][y] = GridManager.CellUsage.Factory;
+            // 放置模式
+            else if (placeItemListManager.curPlaceMode == PlaceItemListManager.placeMode.Place)
+            {
+                if (placeItemListManager.selectedFactory == null)
+                    return;
+                var previewObj = placeItemListManager.selectedFactory.previewObj;
+                var size = placeItemListManager.selectedFactory.size;
+                var hght = placeItemListManager.selectedFactory.height;
+                var placePrefab = placeItemListManager.selectedFactory.factoryPrefab;
+                int left = mouseCoord.x - Mathf.FloorToInt(size.x / 2f);
+                int right = left + size.x - 1;
+                int bottom = mouseCoord.y - Mathf.FloorToInt(size.y / 2f);
+                int top = bottom + size.y - 1;
+                if (!Check(left, right, bottom, top, PlaceItemListManager.GetInstance().selectedFactory.need))
+                    return;
+                var go = Instantiate(placePrefab, previewObj.transform.position, previewObj.transform.rotation);
+                go.name = placePrefab.name;
+                // 放置道路时，更新道路及临路的网格和表现
+                if (placeItemListManager.selectedFactory.need == FactoryUIItem.PlaceNeed.None)
+                {
+                    GridManager.GetInstance().gridUsage[left][bottom] = GridManager.CellUsage.Walkway;
+                    SetWalkway(left, bottom, go);
+                    // 更新四邻居的道路表现
+                    var gm = GridManager.GetInstance();
+                    int width = gm.width;
+                    int height = gm.height;
+                    // 四个方向偏移
+                    (int dx, int dy)[] dirs = new (int, int)[] { (0, 1), (0, -1), (-1, 0), (1, 0) };
+                    foreach (var (dx, dy) in dirs)
+                    {
+                        int nx = left + dx;
+                        int ny = bottom + dy;
+                        if (nx < 0 || nx >= width || ny < 0 || ny >= height)
+                            continue;
+                        if (gm.gridUsage[nx][ny] != GridManager.CellUsage.Walkway)
+                            continue;
+
+                        // 在网格中心位置进行物体查找（用小范围重叠检测）
+                        Vector3 cellLocal = new Vector3(nx + 0.5f, 0, ny + 0.5f);
+                        Vector3 worldCenter = grid.TransformPoint(cellLocal);
+                        float radius = Mathf.Max(0.1f, gm.cellSize * 0.45f);
+                        Collider[] cols = Physics.OverlapSphere(worldCenter, radius);
+                        GameObject neighborGo = null;
+                        int factoryLayer = LayerMask.NameToLayer("Factory");
+                        foreach (var col in cols)
+                        {
+                            if (col == null) continue;
+                            // 取根对象，避免取到子碰撞体
+                            var root = col.transform.root.gameObject;
+                            if (root == null) continue;
+                            // 忽略新放置的 go 自身（位置可能重合）
+                            if (root == go) continue;
+                            if (factoryLayer == -1 || root.layer != factoryLayer) continue;
+                            neighborGo = root;
+                            break;
+                        }
+                        if (neighborGo != null)
+                            SetWalkway(nx, ny, neighborGo);
+                    }
+                }
+                else
+                    for (int x = left; x <= right; x++)
+                        for (int y = bottom; y <= top; y++)
+                            GridManager.GetInstance().gridUsage[x][y] = GridManager.CellUsage.Factory;
+            }
         }
     }
     private bool Check(int left, int right, int bottom, int top, FactoryUIItem.PlaceNeed need)
