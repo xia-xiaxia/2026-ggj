@@ -53,12 +53,17 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
-    void LogInfo(string message)
+    public void SetInfoText(string message)
     {
         if (infText != null)
         {
             infText.text = message;
         }
+    }
+
+    void LogInfo(string message)
+    {
+        SetInfoText(message);
     }
 
     void LogWarning(string message)
@@ -307,9 +312,12 @@ public class GameManager : MonoBehaviour
     }
 
     /// 显示投料面板
-    void ShowInvestmentPanel(TurnBasedFactory factory)
+    public void ShowInvestmentPanel(TurnBasedFactory factory)
     {
         if (investmentPanel == null) return;
+        if (factory == null) return;
+
+        selectedFactory = factory;
 
         investmentPanel.SetActive(true); 
         investmentCountInput.gameObject.SetActive(false);    // 先隐藏以防止残留数据
@@ -322,6 +330,10 @@ public class GameManager : MonoBehaviour
         {
             investmentCountInput.gameObject.SetActive(true);
             investmentCountInput.text = "请输入投料份数......";
+        }
+        else if (investmentCountInput != null)
+        {
+            investmentCountInput.text = string.Empty;
         }
     }
 
@@ -392,9 +404,11 @@ public class GameManager : MonoBehaviour
     {
         if (selectedFactory == null) return;
 
+        bool hasInputs = FactoryHasInputs(selectedFactory);
+
         // 获取玩家输入的份数
         int count = 1;
-        if (investmentCountInput != null)
+        if (investmentCountInput != null && hasInputs)
         {
             
             if(investmentCountInput.text == "")
@@ -428,6 +442,14 @@ public class GameManager : MonoBehaviour
         // 关闭面板
         investmentPanel.SetActive(false);
         selectedFactory = null;
+    }
+
+    bool FactoryHasInputs(TurnBasedFactory factory)
+    {
+        if (factory == null) return false;
+        if (factory.recipes == null || factory.recipes.Count == 0) return false;
+        var recipe = factory.recipes[factory.currentRecipeIndex];
+        return recipe != null && recipe.inputs != null && recipe.inputs.Count > 0;
     }
 
     /// 取消投料

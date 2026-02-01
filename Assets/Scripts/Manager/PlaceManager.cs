@@ -217,6 +217,13 @@ public class PlaceManager : MonoBehaviour
                     if (target != _toSelectObj)
                         return;
                     // target投料目标
+                    var factory = target.GetComponent<TurnBasedFactory>();
+                    if (factory == null)
+                        return;
+                    if (GameManager.Instance != null)
+                    {
+                        GameManager.Instance.ShowInvestmentPanel(factory);
+                    }
                     return;
                 }
             }
@@ -235,14 +242,18 @@ public class PlaceManager : MonoBehaviour
                 int top = bottom + size.y - 1;
                 if (!Check(left, right, bottom, top, PlaceItemListManager.GetInstance().selectedFactory.need))
                     return;
-                if(placePrefab.name != "Walkway")
-            {
-                if(GameManager.Instance.CreateFactory(placePrefab.name) == null)
-                    return;
-            }
             var go = Instantiate(placePrefab, previewObj.transform.position, previewObj.transform.rotation);
                 go.name = placePrefab.name;
                 go.name = placePrefab.name;
+            if (placePrefab.name != "Walkway")
+            {
+                var factory = go.GetComponent<TurnBasedFactory>();
+                if (factory != null && !factory.Build())
+                {
+                    Destroy(go);
+                    return;
+                }
+            }
             // 放置道路时，更新道路及临路的网格和表现
                 if (placeItemListManager.selectedFactory.need == FactoryUIItem.PlaceNeed.None)
                 {

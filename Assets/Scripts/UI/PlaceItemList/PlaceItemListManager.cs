@@ -39,6 +39,57 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
             fac.localScale = Vector3.one;
         foreach (var item in Items)
             item.SetActive(false);
+
+        UpdateModeInfo();
+    }
+
+    private void UpdateModeInfo()
+    {
+        if (GameManager.Instance != null)
+        {
+            string info = $"当前模式：{curPlaceMode}";
+            if (curPlaceMode == placeMode.Place && selectedFactory != null)
+            {
+                string desc = GetSelectedFactoryDescription();
+                if (!string.IsNullOrEmpty(desc))
+                {
+                    info += $"\n{desc}";
+                }
+            }
+            GameManager.Instance.SetInfoText(info);
+        }
+    }
+
+    private string GetSelectedFactoryDescription()
+    {
+        if (selectedFactory == null || selectedFactory.factoryPrefab == null)
+            return null;
+
+        string prefabName = selectedFactory.factoryPrefab.name;
+        if (prefabName == "Walkway")
+            return null;
+
+        string factoryName = null;
+        var factory = selectedFactory.factoryPrefab.GetComponent<TurnBasedFactory>();
+        if (factory != null && !string.IsNullOrEmpty(factory.factoryName))
+        {
+            factoryName = factory.factoryName;
+        }
+        else if (!string.IsNullOrEmpty(prefabName))
+        {
+            factoryName = prefabName;
+        }
+
+        if (string.IsNullOrEmpty(factoryName))
+            return null;
+
+        FactoryInfoData info = FactoryDatabaseLoader.GetFactoryByName(factoryName);
+        if (info != null && !string.IsNullOrEmpty(info.description))
+        {
+            return $"{info.factoryName}\n{info.description}";
+        }
+
+        return factoryName;
     }
     public void OnFactoryTypeButtonClicked(int id)
     {
@@ -73,6 +124,7 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
                 needWalkwayBeside.SetActive(false);
                 needLakeBeside.SetActive(false);
                 needNoLakeBeside.SetActive(false);
+                UpdateModeInfo();
                 return;
             }
         }
@@ -126,6 +178,7 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
         factorySelectedFrame.SetActive(false);
         deleteSelectedFrame.SetActive(false);
         curPlaceMode = placeMode.Place;
+        UpdateModeInfo();
     }
     public void OnFactoryButtonClicked()
     {
@@ -139,6 +192,7 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
             needLakeBeside.SetActive(false);
             needNoLakeBeside.SetActive(false);
         }
+        UpdateModeInfo();
     }
     public void OnDeleteButtonClicked()
     {
@@ -150,5 +204,6 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
         needWalkwayBeside.SetActive(false);
         needLakeBeside.SetActive(false);
         needNoLakeBeside.SetActive(false);
+        UpdateModeInfo();
     }
 }
