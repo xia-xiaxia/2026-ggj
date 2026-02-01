@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
-using Mono.Cecil;
 using UnityEngine.InputSystem; 
 
 /// 资源管理器 - 单例模式，管理所有游戏资源
@@ -39,6 +38,22 @@ public class ResourceManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         InitializeResources();
+    }
+
+    void Start()
+    {
+        if (TurnSystem.Instance != null)
+        {
+            TurnSystem.Instance.OnTurnStarting += OnTurnStarting;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (TurnSystem.Instance != null)
+        {
+            TurnSystem.Instance.OnTurnStarting -= OnTurnStarting;
+        }
     }
 
     /// 初始化资源 - 根据initialResources列表设置初始值
@@ -89,6 +104,11 @@ public class ResourceManager : MonoBehaviour
                 { ResourceType.Mask1, 2 }
             });
         }
+    }
+
+    void OnTurnStarting()
+    {
+        SetResource(ResourceType.Electricity, 0);
     }
 
     /// 增加资源

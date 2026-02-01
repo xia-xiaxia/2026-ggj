@@ -38,6 +38,12 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Button cancelInvestButton; // 取消按钮
 
+    [Header("回合遮罩")]
+    [SerializeField]
+    private GameObject productionMask; // 回合结束黑幕
+    [SerializeField]
+    private TextMeshProUGUI productionMaskText; // 黑幕文本
+
     private List<TurnBasedFactory> factories = new List<TurnBasedFactory>();
     private Dictionary<TurnBasedFactory, GameObject> factoryUIItems = new Dictionary<TurnBasedFactory, GameObject>();
     private TurnBasedFactory selectedFactory; // 当前选中的工厂
@@ -97,6 +103,8 @@ public class GameManager : MonoBehaviour
         if (TurnSystem.Instance != null)
         {
             TurnSystem.Instance.OnTurnStarted += UpdateUI;
+            TurnSystem.Instance.OnTurnStarted += HideProductionMask;
+            TurnSystem.Instance.OnTurnEnded += ShowProductionMask;
         }
 
         // 订阅资源变化事件，用于刷新投料面板库存显示
@@ -128,6 +136,8 @@ public class GameManager : MonoBehaviour
             investmentPanel.SetActive(false);
         }
 
+        HideProductionMask();
+
         InitializeUI();
     }
 
@@ -136,6 +146,8 @@ public class GameManager : MonoBehaviour
         if (TurnSystem.Instance != null)
         {
             TurnSystem.Instance.OnTurnStarted -= UpdateUI;
+            TurnSystem.Instance.OnTurnStarted -= HideProductionMask;
+            TurnSystem.Instance.OnTurnEnded -= ShowProductionMask;
         }
 
         if (ResourceManager.Instance != null)
@@ -460,6 +472,26 @@ public class GameManager : MonoBehaviour
             investmentPanel.SetActive(false);
         }
         selectedFactory = null;
+    }
+
+    void ShowProductionMask()
+    {
+        if (productionMaskText != null)
+        {
+            productionMaskText.text = "生产中...";
+        }
+        if (productionMask != null)
+        {
+            productionMask.SetActive(true);
+        }
+    }
+
+    void HideProductionMask()
+    {
+        if (productionMask != null)
+        {
+            productionMask.SetActive(false);
+        }
     }
 
 }

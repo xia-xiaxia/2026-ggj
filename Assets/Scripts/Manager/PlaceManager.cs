@@ -222,7 +222,15 @@ public class PlaceManager : MonoBehaviour
                         return;
                     if (GameManager.Instance != null)
                     {
-                        GameManager.Instance.ShowInvestmentPanel(factory);
+                        if (!FactoryHasInputs(factory))
+                        {
+                            factory.Invest();
+                            GameManager.Instance.UpdateUI();
+                        }
+                        else
+                        {
+                            GameManager.Instance.ShowInvestmentPanel(factory);
+                        }
                     }
                     return;
                 }
@@ -508,6 +516,14 @@ public class PlaceManager : MonoBehaviour
         var results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
         return results.Count > 0;
+    }
+
+    private bool FactoryHasInputs(TurnBasedFactory factory)
+    {
+        if (factory == null) return false;
+        if (factory.recipes == null || factory.recipes.Count == 0) return false;
+        var recipe = factory.recipes[factory.currentRecipeIndex];
+        return recipe != null && recipe.inputs != null && recipe.inputs.Count > 0;
     }
     private List<int> GerFactoryGridByRenderer(GameObject target)
     {

@@ -31,7 +31,6 @@ public class TurnBasedFactory : MonoBehaviour
         if (TurnSystem.Instance != null)
         {
             TurnSystem.Instance.OnTurnStarted += OnTurnStarted;
-            TurnSystem.Instance.OnTurnEnded += OnTurnEnded;
         }
     }
 
@@ -40,7 +39,6 @@ public class TurnBasedFactory : MonoBehaviour
         if (TurnSystem.Instance != null)
         {
             TurnSystem.Instance.OnTurnStarted -= OnTurnStarted;
-            TurnSystem.Instance.OnTurnEnded -= OnTurnEnded;
         }
     }
 
@@ -182,13 +180,8 @@ public class TurnBasedFactory : MonoBehaviour
     /// 回合开始事件回调 - 重置本回合投料标志
     void OnTurnStarted()
     {
-        hasInvestedThisTurn = false;
-    }
-
-    /// 回合结束事件回调 - 收获产出
-    void OnTurnEnded()
-    {
         Harvest();
+        hasInvestedThisTurn = false;
     }
 
     /// 切换配方

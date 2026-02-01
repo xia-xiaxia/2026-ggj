@@ -47,13 +47,20 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
     {
         if (GameManager.Instance != null)
         {
-            string info = $"当前模式：{curPlaceMode}";
+            string info = string.Empty;
             if (curPlaceMode == placeMode.Place && selectedFactory != null)
             {
                 string desc = GetSelectedFactoryDescription();
+                string costInfo = GetSelectedFactoryBuildCosts();
                 if (!string.IsNullOrEmpty(desc))
                 {
-                    info += $"\n{desc}";
+                    info = desc;
+                }
+                if (!string.IsNullOrEmpty(costInfo))
+                {
+                    if (!string.IsNullOrEmpty(info))
+                        info += "\n";
+                    info += costInfo;
                 }
             }
             GameManager.Instance.SetInfoText(info);
@@ -90,6 +97,47 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
         }
 
         return factoryName;
+    }
+
+    private string GetSelectedFactoryBuildCosts()
+    {
+        if (selectedFactory == null || selectedFactory.factoryPrefab == null)
+            return null;
+
+        string prefabName = selectedFactory.factoryPrefab.name;
+        if (prefabName == "Walkway")
+            return null;
+
+        string factoryName = null;
+        var factory = selectedFactory.factoryPrefab.GetComponent<TurnBasedFactory>();
+        if (factory != null && !string.IsNullOrEmpty(factory.factoryName))
+        {
+            factoryName = factory.factoryName;
+        }
+        else if (!string.IsNullOrEmpty(prefabName))
+        {
+            factoryName = prefabName;
+        }
+
+        if (string.IsNullOrEmpty(factoryName))
+            return null;
+
+        FactoryInfoData info = FactoryDatabaseLoader.GetFactoryByName(factoryName);
+        if (info == null)
+            return null;
+
+        if (info.buildCosts == null || info.buildCosts.Count == 0)
+            return "建造材料：无";
+
+        string costInfo = "建造材料：";
+        for (int i = 0; i < info.buildCosts.Count; i++)
+        {
+            var cost = info.buildCosts[i];
+            costInfo += $"{cost.resourceType} x{cost.quantity}";
+            if (i < info.buildCosts.Count - 1)
+                costInfo += "，";
+        }
+        return costInfo;
     }
     public void OnFactoryTypeButtonClicked(int id)
     {
