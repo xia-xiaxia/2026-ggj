@@ -10,6 +10,7 @@ public class BootManager : MonoBehaviour
 {
     public List<CanvasGroup> logInImages;
     public GameObject bg;
+    public GameObject eventSystem;
     private bool isClickToStart = false;
 
 
@@ -52,5 +53,9 @@ public class BootManager : MonoBehaviour
         cg.gameObject.SetActive(false);
         bg.SetActive(false);
     }
-    public void OnClickToStart() => isClickToStart = true;
+    public void OnClickToStart()
+    {
+        Destroy(eventSystem); // 防止多个eventSystem
+        isClickToStart = true;
+    }
 }

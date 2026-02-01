@@ -22,9 +22,9 @@ public class GridManager : Singleton<GridManager>
     public enum CellUsage
     {
         Empty,
-        Obstacle,
+        Lake,
         Walkway,
-        Building
+        Factory
     }
     [Header("网格使用情况")]
     public List<List<CellUsage>> gridUsage;
@@ -97,7 +97,7 @@ public class GridManager : Singleton<GridManager>
                 if (cornerCount >= 3)
                     colCellUsage.Add(CellUsage.Empty);
                 else
-                    colCellUsage.Add(CellUsage.Obstacle);
+                    colCellUsage.Add(CellUsage.Lake);
                 leftCol[y - 1] = colUnder;
                 colUnder = curCorner;
             }
@@ -110,9 +110,9 @@ public class GridManager : Singleton<GridManager>
         Vector3 worldPoint = grid.TransformPoint(meshLocalPos);
         float rayHeight = 50f;
         float sphereRadius = 0.1f;
-        Ray ray = new (worldPoint + Vector3.up * rayHeight, Vector3.down);
+        Ray ray = new(worldPoint + Vector3.up * rayHeight, Vector3.down);
         if (Physics.SphereCast(ray, sphereRadius, out RaycastHit hit, rayHeight * 2f, groundLayer))
-                return true;
+            return true;
         return false;
     }
     private IEnumerator SetObstacle()
@@ -128,9 +128,9 @@ public class GridManager : Singleton<GridManager>
         }
         for (int x = 0; x < width; x++)
         {
-            for(int y = 0; y < height; y++)
+            for (int y = 0; y < height; y++)
             {
-                if(gridUsage[x][y] == CellUsage.Obstacle)
+                if (gridUsage[x][y] == CellUsage.Lake)
                 {
                     Vector3 pos = new Vector3((x + 0.5f) * cellSize, 0f, (y + 0.5f) * cellSize);
                     Instantiate(crossMarkerPrefab, crossMarkerParent.TransformPoint(pos), Quaternion.identity, crossMarkerParent);
