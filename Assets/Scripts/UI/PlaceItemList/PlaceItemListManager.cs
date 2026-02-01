@@ -2,6 +2,7 @@ using DG.Tweening;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Xml.Schema;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,8 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
     public GameObject needWalkwayBeside;
     public GameObject needLakeBeside;
     public GameObject needNoLakeBeside;
+    public Transform broadcastParent;
+    public GameObject broadcastPrefab;
 
     public FactoryUIItem selectedFactory;
     public bool isDeleteMode = false;
@@ -94,6 +97,15 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
             OnFactoryButtonClicked();
         }
     }
+    public void Broadcast(string broadcast)
+    {
+        GameObject go = Instantiate(broadcastPrefab, broadcastParent);
+        go.GetComponent<TextMeshProUGUI>().text = broadcast;
+        DOTween.Sequence()
+            .AppendInterval(1f)
+            .Append(go.GetComponent<TextMeshProUGUI>().DOFade(0f, 0.5f))
+            .AppendCallback(() => Destroy(go));
+    }
     public void OnVisibleButtonClicked()
     {
         grid.gameObject.SetActive(!grid.gameObject.activeSelf);
@@ -105,7 +117,6 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
         deleteSelectedFrame.SetActive(false);
         isDeleteMode = false;
     }
-
     public void OnFactoryButtonClicked()
     {
         walkwaySelectedFrame.SetActive(false);

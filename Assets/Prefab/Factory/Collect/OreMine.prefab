@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7394169773645951987}
   - component: {fileID: 240896624118857115}
   - component: {fileID: 22824351321487922}
-  - component: {fileID: 6153438161545172341}
+  - component: {fileID: 7866793510782626416}
   m_Layer: 8
   m_Name: OreMine
   m_TagString: Untagged
@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 2, z: 3}
+  m_LocalScale: {x: 146, y: 140, z: 146}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -41,7 +41,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7726184058240723479}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -6759615949449056226, guid: a64b66d128cd0ef4f819dd9ccd9194e0, type: 3}
 --- !u!23 &22824351321487922
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -91,7 +91,7 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6153438161545172341
+--- !u!65 &7866793510782626416
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -110,5 +110,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.019333333, y: 0.019333337, z: 0.026527178}
+  m_Center: {x: -0.00013415655, y: -0.00071695325, z: 0.005422872}

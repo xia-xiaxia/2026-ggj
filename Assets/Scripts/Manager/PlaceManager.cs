@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlaceManager : MonoBehaviour
 {
@@ -50,7 +51,7 @@ public class PlaceManager : MonoBehaviour
                 int bottom = mouseCoord.y - Mathf.FloorToInt(size.y / 2);
                 int top = bottom + size.y - 1;
                 previewObj.transform.position = grid.TransformPoint(new Vector3(left + size.x / 2f, hght / 2f, bottom + size.y / 2f));
-                if (Check(left, right, bottom, top))
+                if (Check(left, right, bottom, top, PlaceItemListManager.GetInstance().selectedFactory.need))
                     material.color = Color.green;
                 else
                     material.color = Color.red;
@@ -112,39 +113,80 @@ public class PlaceManager : MonoBehaviour
                     GameObject target = hit.collider.gameObject;
                     if (target != _toDeleteObj)
                         return;
-                    // 尝试根据渲染器包围盒恢复占据的网格单元并清空
+
                     var gm = GridManager.GetInstance();
-                    if (gm != null)
+                    var facGrid = GerFactoryGridByRenderer(target);
+                    if (target.name == "Walkway") // 删除道路需要判读有没有依赖
                     {
-                        var renderer = target.GetComponentInChildren<Renderer>();
-                        if (renderer != null)
+                        int wx = facGrid[0];
+                        int wy = facGrid[2];
+                        gm.gridUsage[wx][wy] = GridManager.CellUsage.Empty;
+
+                        bool canDelete = true;
+                        (int nx, int ny)[] dirs = { (0, 1), (0, -1), (-1, 0), (1, 0) };
+                        foreach (var (dx, dy) in dirs)
                         {
-                            // 将包围盒的 min/max 世界坐标转换到 grid 的本地坐标系
-                            Vector3 localMin = grid.InverseTransformPoint(renderer.bounds.min);
-                            Vector3 localMax = grid.InverseTransformPoint(renderer.bounds.max);
+                            int nx = wx + dx;
+                            int ny = wy + dy;
+                            if (nx < 0 || nx >= gm.width || ny < 0 || ny >= gm.height)
+                                continue;
+                            if (gm.gridUsage[nx][ny] != GridManager.CellUsage.Factory)
+                                continue;
 
-                            int l = Mathf.FloorToInt(localMin.x);
-                            int r = Mathf.CeilToInt(localMax.x) - 1;
-                            int b = Mathf.FloorToInt(localMin.z);
-                            int t = Mathf.CeilToInt(localMax.z) - 1;
+                            // 在该邻格中心做小范围检测以找到工厂根对象（layer 为 Factory）
+                            Vector3 cellLocal = new Vector3(nx + 0.5f, 0f, ny + 0.5f);
+                            Vector3 worldCenter = grid.TransformPoint(cellLocal);
+                            float radius = Mathf.Max(0.1f, gm.cellSize * 0.45f);
+                            Collider[] cols = Physics.OverlapSphere(worldCenter, radius);
 
-                            // 限定到网格范围内
-                            int width = gm.width;
-                            int height = gm.height;
-                            l = Mathf.Clamp(l, 0, width - 1);
-                            r = Mathf.Clamp(r, 0, width - 1);
-                            b = Mathf.Clamp(b, 0, height - 1);
-                            t = Mathf.Clamp(t, 0, height - 1);
+                            GameObject factoryRoot = null;
+                            foreach (var col in cols)
+                            {
+                                if (col == null) continue;
+                                var root = col.transform.root.gameObject;
+                                if (root == null) continue;
+                                if (factoryLayer == -1 || root.layer != factoryLayer) continue;
+                                factoryRoot = root;
+                                break;
+                            }
+                            if (factoryRoot == null)
+                            {
+                                canDelete = false;
+                                break;
+                            }
 
-                            for (int x = l; x <= r; x++)
-                                for (int y = b; y <= t; y++)
-                                {
-                                    Debug.Log(x + "," + y);
-                                    gm.gridUsage[x][y] = GridManager.CellUsage.Empty;
-                                }
+                            // 获取该工厂占用的网格范围
+                            var fGrid = GerFactoryGridByRenderer(factoryRoot);
+                            int fl = fGrid[0], fr = fGrid[1], fb = fGrid[2], ft = fGrid[3];
+                            // 检查该工厂是否仍然满足临路要求
+                            if (!CheckNeeds(fl, fr, fb, ft, FactoryUIItem.PlaceNeed.WalkwayBeside))
+                            {
+                                canDelete = false;
+                                break;
+                            }
+                        }
+
+                        if (!canDelete)
+                        {
+                            placeItemListManager.Broadcast("无法删除该道路！");
+                            gm.gridUsage[wx][wy] = GridManager.CellUsage.Walkway;
+                        }
+                        else
+                        {
+                            Debug.Log(wx + "," + wy);
+                            Destroy(target);
                         }
                     }
-                    Destroy(target);
+                    else // 删除工厂
+                    {
+                        for (int x = facGrid[0]; x <= facGrid[1]; x++)
+                            for (int y = facGrid[2]; y <= facGrid[3]; y++)
+                            {
+                                Debug.Log(x + "," + y);
+                                gm.gridUsage[x][y] = GridManager.CellUsage.Empty;
+                            }
+                        Destroy(target);
+                    }
                 }
                 return;
             }
@@ -157,9 +199,10 @@ public class PlaceManager : MonoBehaviour
             int right = left + size.x - 1;
             int bottom = mouseCoord.y - Mathf.FloorToInt(size.y / 2f);
             int top = bottom + size.y - 1;
-            if (!Check(left, right, bottom, top))
+            if (!Check(left, right, bottom, top, PlaceItemListManager.GetInstance().selectedFactory.need))
                 return;
             var go = Instantiate(placePrefab, previewObj.transform.position, previewObj.transform.rotation);
+            go.name = placePrefab.name;
             // 放置道路时，更新道路及临路的网格和表现
             if (placeItemListManager.selectedFactory.need == FactoryUIItem.PlaceNeed.None)
             {
@@ -209,7 +252,7 @@ public class PlaceManager : MonoBehaviour
                         GridManager.GetInstance().gridUsage[x][y] = GridManager.CellUsage.Factory;
         }
     }
-    private bool Check(int left, int right, int bottom, int top)
+    private bool Check(int left, int right, int bottom, int top, FactoryUIItem.PlaceNeed need)
     {
         int width = GridManager.GetInstance().width;
         int height = GridManager.GetInstance().height;
@@ -227,8 +270,15 @@ public class PlaceManager : MonoBehaviour
                 }
             }
         }
+        return CheckNeeds(left, right, bottom, top, need);
+    }
+    private bool CheckNeeds(int left, int right, int bottom, int top, FactoryUIItem.PlaceNeed need)
+    {
+        int width = GridManager.GetInstance().width;
+        int height = GridManager.GetInstance().height;
+        var gridUsage = GridManager.GetInstance().gridUsage;
         // 不同工厂不同放置需求
-        FactoryUIItem.PlaceNeed need = PlaceItemListManager.GetInstance().selectedFactory.need;
+        // 放置道路无需求
         if (need == FactoryUIItem.PlaceNeed.None)
             return true;
         // 临路
@@ -406,5 +456,34 @@ public class PlaceManager : MonoBehaviour
         var results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
         return results.Count > 0;
+    }
+    private List<int> GerFactoryGridByRenderer(GameObject target)
+    {
+        var gm = GridManager.GetInstance();
+        var renderer = target.GetComponentInChildren<Renderer>();
+        // 将包围盒的 min/max 世界坐标转换到 grid 的本地坐标系
+        Vector3 localMin = grid.InverseTransformPoint(renderer.bounds.min);
+        Vector3 localMax = grid.InverseTransformPoint(renderer.bounds.max);
+
+        int l = Mathf.FloorToInt(localMin.x);
+        int r = Mathf.CeilToInt(localMax.x) - 1;
+        int b = Mathf.FloorToInt(localMin.z);
+        int t = Mathf.CeilToInt(localMax.z) - 1;
+
+        // 限定到网格范围内
+        int width = gm.width;
+        int height = gm.height;
+        l = Mathf.Clamp(l, 0, width - 1);
+        r = Mathf.Clamp(r, 0, width - 1);
+        b = Mathf.Clamp(b, 0, height - 1);
+        t = Mathf.Clamp(t, 0, height - 1);
+
+        var facGrid = new List<int>();
+        facGrid.Add(l);
+        facGrid.Add(r);
+        facGrid.Add(b);
+        facGrid.Add(t);
+
+        return facGrid;
     }
 }
