@@ -2,6 +2,7 @@ using DG.Tweening;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Xml.Schema;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,9 +17,17 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
     public GameObject needWalkwayBeside;
     public GameObject needLakeBeside;
     public GameObject needNoLakeBeside;
+    public Transform broadcastParent;
+    public GameObject broadcastPrefab;
 
     public FactoryUIItem selectedFactory;
-    public bool isDeleteMode = false;
+    public enum placeMode
+    {
+        Place,
+        Delete,
+        Input
+    }
+    public placeMode curPlaceMode = placeMode.Input;
 
     private int curFactoryTypeId = -1;
 
@@ -60,6 +69,10 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
             if (fac == selectedFactory && selectedFactory.need != FactoryUIItem.PlaceNeed.None) // 如果是道路，再次点击不会取消
             {
                 selectedFactory = null;
+                curPlaceMode = placeMode.Input;
+                needWalkwayBeside.SetActive(false);
+                needLakeBeside.SetActive(false);
+                needNoLakeBeside.SetActive(false);
                 return;
             }
         }
@@ -94,6 +107,15 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
             OnFactoryButtonClicked();
         }
     }
+    public void Broadcast(string broadcast)
+    {
+        GameObject go = Instantiate(broadcastPrefab, broadcastParent);
+        go.GetComponent<TextMeshProUGUI>().text = broadcast;
+        DOTween.Sequence()
+            .AppendInterval(1f)
+            .Append(go.GetComponent<TextMeshProUGUI>().DOFade(0f, 0.5f))
+            .AppendCallback(() => Destroy(go));
+    }
     public void OnVisibleButtonClicked()
     {
         grid.gameObject.SetActive(!grid.gameObject.activeSelf);
@@ -103,15 +125,14 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
         walkwaySelectedFrame.SetActive(true);
         factorySelectedFrame.SetActive(false);
         deleteSelectedFrame.SetActive(false);
-        isDeleteMode = false;
+        curPlaceMode = placeMode.Place;
     }
-
     public void OnFactoryButtonClicked()
     {
         walkwaySelectedFrame.SetActive(false);
         factorySelectedFrame.SetActive(true);
         deleteSelectedFrame.SetActive(false);
-        isDeleteMode = false;
+        curPlaceMode = placeMode.Place;
         if (selectedFactory == null)
         {
             needWalkwayBeside.SetActive(false);
@@ -124,7 +145,7 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
         walkwaySelectedFrame.SetActive(false);
         factorySelectedFrame.SetActive(false);
         deleteSelectedFrame.SetActive(true);
-        isDeleteMode = true;
+        curPlaceMode = placeMode.Delete;
         UpdateSelectedFactory(null);
         needWalkwayBeside.SetActive(false);
         needLakeBeside.SetActive(false);
