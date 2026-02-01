@@ -113,6 +113,32 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7861788, y: 1.4251093, z: 0.10697688}
   m_Center: {x: -0.6572266, y: -0.0051794094, z: 0.0039338516}
+--- !u!114 &3408973951688271883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5278433339676387291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432d192441af714449e2e6c41696fda0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnBasedFactory
+  factoryType: 5
+  factoryName: "\u6C60\u5E95\u6CE5\u91C7\u6398\u5382"
+  buildCosts:
+  - resourceType: 20
+    quantity: 2
+  recipes:
+  - recipeName: 
+    inputs:
+    - resourceType: 18
+      quantity: 2
+    outputs:
+    - resourceType: 5
+      quantity: 2
+  currentRecipeIndex: 0
 --- !u!1 &7120708597413714946
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,6 +149,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2114684463171660920}
   - component: {fileID: 4857760073250841967}
+  - component: {fileID: -4150899103906445318}
   m_Layer: 0
   m_Name: MudDigger
   m_TagString: Untagged
@@ -167,20 +194,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.59, y: 1.5, z: 1.48}
   m_Center: {x: 0, y: 0.66, z: 0}
---- !u!114 &3408973951688271883
+--- !u!114 &-4150899103906445318
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3492023637523512439}
+  m_GameObject: {fileID: 7120708597413714946}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 432d192441af714449e2e6c41696fda0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnBasedFactory
   factoryType: 5
-  factoryName: "\u6C60\u5E95\u6CE5\u91C7\u6398\u5382"
+  factoryName: "\u6CE5\u5E95\u6CE5\u6316\u5382"
   buildCosts:
   - resourceType: 20
     quantity: 2

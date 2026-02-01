@@ -76,27 +76,22 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
         if (prefabName == "Walkway")
             return null;
 
-        string factoryName = null;
-        var factory = selectedFactory.factoryPrefab.GetComponent<TurnBasedFactory>();
-        if (factory != null && !string.IsNullOrEmpty(factory.factoryName))
+        FactoryInfoData info = GetSelectedFactoryInfo();
+        if (info != null)
         {
-            factoryName = factory.factoryName;
-        }
-        else if (!string.IsNullOrEmpty(prefabName))
-        {
-            factoryName = prefabName;
-        }
-
-        if (string.IsNullOrEmpty(factoryName))
-            return null;
-
-        FactoryInfoData info = FactoryDatabaseLoader.GetFactoryByName(factoryName);
-        if (info != null && !string.IsNullOrEmpty(info.description))
-        {
-            return $"{info.factoryName}\n{info.description}";
+            string desc = info.factoryName;
+            if (!string.IsNullOrEmpty(info.description))
+            {
+                desc += $"\n{info.description}";
+            }
+            if (!string.IsNullOrEmpty(info.remarks))
+            {
+                desc += $"\n备注：{info.remarks}";
+            }
+            return desc;
         }
 
-        return factoryName;
+        return prefabName;
     }
 
     private string GetSelectedFactoryBuildCosts()
@@ -108,21 +103,7 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
         if (prefabName == "Walkway")
             return null;
 
-        string factoryName = null;
-        var factory = selectedFactory.factoryPrefab.GetComponent<TurnBasedFactory>();
-        if (factory != null && !string.IsNullOrEmpty(factory.factoryName))
-        {
-            factoryName = factory.factoryName;
-        }
-        else if (!string.IsNullOrEmpty(prefabName))
-        {
-            factoryName = prefabName;
-        }
-
-        if (string.IsNullOrEmpty(factoryName))
-            return null;
-
-        FactoryInfoData info = FactoryDatabaseLoader.GetFactoryByName(factoryName);
+        FactoryInfoData info = GetSelectedFactoryInfo();
         if (info == null)
             return null;
 
@@ -138,6 +119,40 @@ public class PlaceItemListManager : Singleton<PlaceItemListManager>
                 costInfo += "，";
         }
         return costInfo;
+    }
+
+    private FactoryInfoData GetSelectedFactoryInfo()
+    {
+        if (selectedFactory == null || selectedFactory.factoryPrefab == null)
+            return null;
+
+        var factory = selectedFactory.factoryPrefab.GetComponent<TurnBasedFactory>();
+        if (factory != null)
+        {
+            string typeKey = factory.factoryType.ToString();
+            if (!string.IsNullOrEmpty(typeKey))
+            {
+                var infoByType = FactoryDatabaseLoader.GetFactory(typeKey);
+                if (infoByType != null)
+                    return infoByType;
+            }
+            if (!string.IsNullOrEmpty(factory.factoryName))
+            {
+                var infoByName = FactoryDatabaseLoader.GetFactoryByName(factory.factoryName);
+                if (infoByName != null)
+                    return infoByName;
+            }
+        }
+
+        string prefabName = selectedFactory.factoryPrefab.name;
+        if (!string.IsNullOrEmpty(prefabName))
+        {
+            var infoByPrefab = FactoryDatabaseLoader.GetFactoryByName(prefabName);
+            if (infoByPrefab != null)
+                return infoByPrefab;
+        }
+
+        return null;
     }
     public void OnFactoryTypeButtonClicked(int id)
     {
