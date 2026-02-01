@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject factoryItemPrefab; // 工厂项预制体
 
+    public TextMeshProUGUI infText; // 信息显示
+
     [Header("投料面板")]
     [SerializeField]
     private GameObject investmentPanel; // 投料面板
@@ -36,26 +38,6 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Button cancelInvestButton; // 取消按钮
 
-    [Header("选择面板")]
-    [SerializeField]
-    private GameObject actionSelectPanel; // 选择面板（投料/销毁）
-    [SerializeField]
-    public TextMeshProUGUI actionSelectFactoryNameText; // 选择面板工厂名称显示
-    [SerializeField]
-    private Button selectInvestButton; // 选择投料
-    [SerializeField]
-    private Button selectDestroyButton; // 选择销毁
-
-    [Header("销毁确认面板")]
-    [SerializeField]
-    private GameObject destroyConfirmPanel; // 销毁确认面板
-    [SerializeField]
-    public TextMeshProUGUI destroyConfirmFactoryNameText; // 销毁确认面板工厂名称显示
-    [SerializeField]
-    private Button confirmDestroyButton; // 确认销毁按钮
-    [SerializeField]
-    private Button cancelDestroyButton; // 取消销毁按钮
-
     private List<TurnBasedFactory> factories = new List<TurnBasedFactory>();
     private Dictionary<TurnBasedFactory, GameObject> factoryUIItems = new Dictionary<TurnBasedFactory, GameObject>();
     private TurnBasedFactory selectedFactory; // 当前选中的工厂
@@ -71,44 +53,37 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
+    void LogInfo(string message)
+    {
+        if (infText != null)
+        {
+            infText.text = message;
+        }
+    }
+
+    void LogWarning(string message)
+    {
+        if (infText != null)
+        {
+            infText.text = $"[警告] {message}";
+        }
+    }
+
+    void LogError(string message)
+    {
+        if (infText != null)
+        {
+            infText.text = $"[错误] {message}";
+        }
+    }
+
     void Update()
     {
-        // if(Keyboard.current.jKey.wasPressedThisFrame)
-        // {
-        //     // 测试：按 J 键创建水热发电厂
-        //     TurnBasedFactory newFactory = CreateFactory("hydroThermal");
-        //     OnFactoryObjectClicked(newFactory);
-        // }
-        // if(Keyboard.current.lKey.wasPressedThisFrame)
-        // {
-        //     // 测试：按 L 键删除第一个工厂
-        //     if (factories.Count > 0)
-        //     {
-        //         RemoveFactory(factories[0]);
-        //     }
-        // }
-        // if(Keyboard.current.iKey.wasPressedThisFrame)
-        // {
-        //     // 测试：按 I 键显示所有工厂数量
-        //     Debug.Log($"当前工厂数量: {GetFactoryCount()}");
-        // }
-        // if(Keyboard.current.oKey.wasPressedThisFrame)
-        // {
-        //     // 测试：按 O 键创建酸塔工厂
-        //     TurnBasedFactory newFactory = CreateFactory("acidTower");
-        //     OnFactoryObjectClicked(newFactory);
-        // }
-        // if(Keyboard.current.pKey.wasPressedThisFrame)
-        // {
-        //     // 测试：按 P 键创建湖泊采集工厂
-        //     TurnBasedFactory newfactor = CreateFactory("lakeTreat");
-        //     OnFactoryObjectClicked(newfactor);
-            
-        // }
-        // if(Keyboard.current.kKey.wasPressedThisFrame)
-        // {
-        //     InvestAllFactories();
-        // }
+        // 一键投料
+        if (Keyboard.current.iKey.wasPressedThisFrame)
+        {
+            InvestAllFactories();
+        }
     } 
 
     void Start()
@@ -141,42 +116,11 @@ public class GameManager : MonoBehaviour
             cancelInvestButton.onClick.AddListener(OnCancelInvestment);
         }
 
-        // 设置选择面板按钮
-        if (selectInvestButton != null)
-        {
-            selectInvestButton.onClick.AddListener(OnSelectInvest);
-        }
-        if (selectDestroyButton != null)
-        {
-            selectDestroyButton.onClick.AddListener(OnSelectDestroy);
-        }
-
-        // 设置销毁确认面板按钮
-        if (confirmDestroyButton != null)
-        {
-            confirmDestroyButton.onClick.AddListener(OnConfirmDestroy);
-        }
-        if (cancelDestroyButton != null)
-        {
-            cancelDestroyButton.onClick.AddListener(OnCancelDestroy);
-        }
 
         // 初始隐藏投料面板
         if (investmentPanel != null)
         {
             investmentPanel.SetActive(false);
-        }
-
-        // 初始隐藏选择面板
-        if (actionSelectPanel != null)
-        {
-            actionSelectPanel.SetActive(false);
-        }
-
-        // 初始隐藏销毁确认面板
-        if (destroyConfirmPanel != null)
-        {
-            destroyConfirmPanel.SetActive(false);
         }
 
         InitializeUI();
@@ -227,55 +171,6 @@ public class GameManager : MonoBehaviour
         factories = new List<TurnBasedFactory>(FindObjectsByType<TurnBasedFactory>(FindObjectsSortMode.None));
     }
 
-    /// 创建工厂UI项（在放置物体时调用，自动绑定物体）
-    public void CreateFactoryItem(GameObject factoryObj)
-    {
-        if (factoryObj == null) return;
-        if (factoryObj.name == "WalkWay") return;
-
-        TurnBasedFactory factory = factoryObj.GetComponent<TurnBasedFactory>();
-        if (factory == null)
-        {
-            string rawName = factoryObj.name;
-            if (!System.Enum.TryParse(rawName, true, out FactoryType factoryType))
-            {
-                Debug.LogWarning($"无法解析工厂类型: {rawName}");
-                return;
-            }
-
-            FactoryInfoData factoryData = FactoryDatabaseLoader.GetFactory(factoryType.ToString());
-            if (factoryData == null)
-            {
-                Debug.LogError($"找不到工厂类型: {factoryType}");
-                return;
-            }
-
-            factory = factoryObj.AddComponent<TurnBasedFactory>();
-            factory.factoryType = factoryType;
-            factory.factoryName = factoryData.factoryName;
-            factory.buildCosts = factoryData.buildCosts;
-            factory.recipes = factoryData.recipes;
-        }
-
-        if (!factories.Contains(factory))
-        {
-            factories.Add(factory);
-        }
-
-        // 给工厂GameObject添加点击监听（需要Collider组件）
-        if (factory.GetComponent<Collider>() == null && factory.GetComponent<Collider2D>() == null)
-        {
-            factory.gameObject.AddComponent<BoxCollider>();
-        }
-
-        FactoryClickHandler clickHandler = factory.gameObject.GetComponent<FactoryClickHandler>();
-        if (clickHandler == null)
-        {
-            clickHandler = factory.gameObject.AddComponent<FactoryClickHandler>();
-        }
-        clickHandler.OnFactoryClicked = () => OnFactoryObjectClicked(factory);
-    }
-
     /// 工厂投料按钮点击
     void OnFactoryInvestClicked(TurnBasedFactory factory, GameObject item)
     {
@@ -292,23 +187,6 @@ public class GameManager : MonoBehaviour
 
             // 更新状态
             TextMeshProUGUI statusText = item.transform.Find("StatusText")?.GetComponent<TextMeshProUGUI>();
-            if (statusText != null)
-            {
-                statusText.text = factory.GetStatus();
-            }
-        }
-    }
-
-    /// 更新工厂项状态
-    void UpdateFactoryItemStatus()
-    {
-        foreach (var factory in factories)
-        {
-            if (!factoryUIItems.ContainsKey(factory)) continue;
-
-            GameObject item = factoryUIItems[factory];
-            TextMeshProUGUI statusText = item.transform.Find("StatusText")?.GetComponent<TextMeshProUGUI>();
-            
             if (statusText != null)
             {
                 statusText.text = factory.GetStatus();
@@ -334,7 +212,7 @@ public class GameManager : MonoBehaviour
         FactoryInfoData factoryData = FactoryDatabaseLoader.GetFactory(factoryType);
         if (factoryData == null)
         {
-            Debug.LogError($"找不到工厂类型: {factoryType}");
+            LogError($"找不到工厂类型: {factoryType}");
             return null;
         }
 
@@ -352,7 +230,7 @@ public class GameManager : MonoBehaviour
         {
             factories.Add(factory);
             UpdateFactoryDisplay();
-            Debug.Log($"成功创建工厂: {factoryData.factoryName}");
+            LogInfo($"成功创建工厂: {factoryData.factoryName}");
             return factory;
         }
         else
@@ -370,7 +248,7 @@ public class GameManager : MonoBehaviour
             factories.Remove(factory);
             Destroy(factory.gameObject);
             UpdateFactoryDisplay();
-            Debug.Log($"已删除工厂: {factory.factoryName}");
+            LogInfo($"已删除工厂: {factory.factoryName}");
         }
     }
 
@@ -410,7 +288,7 @@ public class GameManager : MonoBehaviour
             }
         }
         UpdateUI();
-        Debug.Log($"批量投料完成，成功 {successCount}/{factories.Count}");
+        LogInfo($"批量投料完成，成功 {successCount}/{factories.Count}");
     }
 
     /// 获取工厂数量
@@ -419,80 +297,13 @@ public class GameManager : MonoBehaviour
         return factories.Count;
     }
 
-    // ============ 放置和交互功能 ============
-
-    /// 放置工厂（待实现）
-    public void PlaceFactory(string factoryType, Vector3 position)
-    {
-
-        Debug.Log($"放置工厂: {factoryType} 在位置 {position}");
-        
-        // 临时实现：直接创建工厂
-        TurnBasedFactory factory = CreateFactory(factoryType);
-        if (factory != null)
-        {
-            factory.transform.position = position;
-        }
-    }
-
-    /// 工厂物体被点击
-    void OnFactoryObjectClicked(TurnBasedFactory factory)
-    {
-        selectedFactory = factory;
-        ShowActionSelectPanel(factory);
-    }
-
-    /// 显示选择面板（投料/销毁）
-    void ShowActionSelectPanel(TurnBasedFactory factory)
-    {
-        if (actionSelectPanel == null) return;
-        // 显示工厂名称
-        if (actionSelectFactoryNameText != null)
-        {
-            actionSelectFactoryNameText.text = factory.factoryName;
-        }
-
-        // 先关闭其他面板
-        if (investmentPanel != null) investmentPanel.SetActive(false);
-        if (destroyConfirmPanel != null) destroyConfirmPanel.SetActive(false);
-
-        actionSelectPanel.SetActive(true);
-    }
-
     /// 选择投料
     void OnSelectInvest()
     {
-        if (actionSelectPanel != null) actionSelectPanel.SetActive(false);
         if (selectedFactory != null)
         {
             ShowInvestmentPanel(selectedFactory);
         }
-    }
-
-    /// 选择销毁
-    void OnSelectDestroy()
-    {
-        if (actionSelectPanel != null) actionSelectPanel.SetActive(false);
-        if (selectedFactory != null)
-        {
-            ShowDestroyConfirmPanel(selectedFactory);
-        }
-    }
-
-    /// 显示销毁确认面板，并在一旁面板显示信息
-    void ShowDestroyConfirmPanel(TurnBasedFactory factory)
-    {
-        if (destroyConfirmPanel == null) return;
-        // 显示工厂名称
-        if (destroyConfirmFactoryNameText != null)
-        {
-            destroyConfirmFactoryNameText.text = factory.factoryName;
-        }
-
-        destroyConfirmPanel.SetActive(true);
-
-        bool hasInputs = true;
-        UpdateInvestmentPanelInfo(factory, ref hasInputs);
     }
 
     /// 显示投料面板
@@ -517,8 +328,7 @@ public class GameManager : MonoBehaviour
     /// 资源变化时刷新投料面板库存显示
     void OnResourceChanged(ResourceChangedEvent evt)
     {
-        bool shouldRefresh = (investmentPanel != null && investmentPanel.activeSelf)
-            || (destroyConfirmPanel != null && destroyConfirmPanel.activeSelf);
+        bool shouldRefresh = (investmentPanel != null && investmentPanel.activeSelf);
 
         if (!shouldRefresh) return;
         if (selectedFactory == null) return;
@@ -591,13 +401,13 @@ public class GameManager : MonoBehaviour
             {
                 selectedFactory.Invest();
                 investmentPanel.SetActive(false);
-                Debug.Log($"成功投料 {count} 份到 {selectedFactory.factoryName}");
+                LogInfo($"成功投料 {count} 份到 {selectedFactory.factoryName}");
                 UpdateUI();
                 return;
             }
             else if (!int.TryParse(investmentCountInput.text, out count) || count <= 0)
             {
-                Debug.LogWarning("请输入有效的投料份数");
+                LogWarning("请输入有效的投料份数");
                 return;
             }
         }
@@ -606,12 +416,12 @@ public class GameManager : MonoBehaviour
         bool success = selectedFactory.Invest(count);
         if (success)
         {
-            Debug.Log($"成功投料 {count} 份到 {selectedFactory.factoryName}");
+            LogInfo($"成功投料 {count} 份到 {selectedFactory.factoryName}");
             UpdateUI();
         }
         else
         {
-            Debug.LogWarning($"投料失败：{selectedFactory.factoryName}");
+            LogWarning($"投料失败：{selectedFactory.factoryName}");
             return;
         }
 
@@ -630,29 +440,6 @@ public class GameManager : MonoBehaviour
         selectedFactory = null;
     }
 
-    /// 确认销毁
-    void OnConfirmDestroy()
-    {
-        if (selectedFactory == null) return;
-
-        RemoveFactory(selectedFactory);
-
-        if (destroyConfirmPanel != null)
-        {
-            destroyConfirmPanel.SetActive(false);
-        }
-        selectedFactory = null;
-    }
-
-    /// 取消销毁
-    void OnCancelDestroy()
-    {
-        if (destroyConfirmPanel != null)
-        {
-            destroyConfirmPanel.SetActive(false);
-        }
-        selectedFactory = null;
-    }
 }
 
 /// 工厂点击处理器（挂载到工厂GameObject上）
