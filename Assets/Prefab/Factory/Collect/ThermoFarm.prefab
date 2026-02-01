@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3373665567085360077}
   - component: {fileID: 2026189182399985579}
   - component: {fileID: 1143523561006285577}
+  - component: {fileID: -2473988147044353370}
   m_Layer: 8
   m_Name: ThermoFarm
   m_TagString: Untagged
@@ -112,3 +113,31 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.019355386, y: 0.019355388, z: 0.032117635}
   m_Center: {x: 0, y: 9.313226e-10, z: 0.0046623913}
+--- !u!114 &-2473988147044353370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4577744758941536290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432d192441af714449e2e6c41696fda0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnBasedFactory
+  factoryType: 7
+  factoryName: "\u55DC\u70ED\u83CC\u57F9\u80B2\u573A"
+  buildCosts:
+  - resourceType: 20
+    quantity: 2
+  recipes:
+  - recipeName: 
+    inputs:
+    - resourceType: 18
+      quantity: 2
+    - resourceType: 2
+      quantity: 1
+    outputs:
+    - resourceType: 15
+      quantity: 1
+  currentRecipeIndex: 0

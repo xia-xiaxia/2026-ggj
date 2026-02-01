@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4221164115210660262}
   - component: {fileID: 3556859976527508561}
   - component: {fileID: 1246069204561091204}
+  - component: {fileID: 3749557758705158887}
   m_Layer: 8
   m_Name: MatFac
   m_TagString: Untagged
@@ -112,3 +113,39 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.027534561, y: 0.028315807, z: 0.052526195}
   m_Center: {x: 0, y: -0.00039061913, z: -0.005610516}
+--- !u!114 &3749557758705158887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3211811842132641391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432d192441af714449e2e6c41696fda0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnBasedFactory
+  factoryType: 13
+  factoryName: "\u5EFA\u7B51\u6750\u6599\u5382"
+  buildCosts:
+  - resourceType: 20
+    quantity: 1
+  - resourceType: 9
+    quantity: 2
+  recipes:
+  - recipeName: 
+    inputs:
+    - resourceType: 18
+      quantity: 1
+    - resourceType: 9
+      quantity: 2
+    - resourceType: 7
+      quantity: 1
+    - resourceType: 6
+      quantity: 1
+    - resourceType: 8
+      quantity: 1
+    outputs:
+    - resourceType: 20
+      quantity: 6
+  currentRecipeIndex: 0

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2309916681593822450}
   - component: {fileID: 6861611646041868422}
   - component: {fileID: 6816233760181872336}
+  - component: {fileID: -7173793409982388597}
   m_Layer: 8
   m_Name: PvFac
   m_TagString: Untagged
@@ -112,3 +113,35 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-7173793409982388597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5184948584911909795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432d192441af714449e2e6c41696fda0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnBasedFactory
+  factoryType: 14
+  factoryName: "\u5149\u4F0F\u5236\u9020\u5382"
+  buildCosts:
+  - resourceType: 20
+    quantity: 2
+  recipes:
+  - recipeName: 
+    inputs:
+    - resourceType: 18
+      quantity: 3
+    - resourceType: 17
+      quantity: 1
+    - resourceType: 6
+      quantity: 1
+    - resourceType: 8
+      quantity: 1
+    outputs:
+    - resourceType: 19
+      quantity: 2
+  currentRecipeIndex: 0

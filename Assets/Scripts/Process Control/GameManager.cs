@@ -73,44 +73,42 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if(Keyboard.current.jKey.wasPressedThisFrame)
-        {
-            // 测试：按 J 键创建水热发电厂
-            TurnBasedFactory newFactory = CreateFactory("hydroThermal");
-            OnFactoryObjectClicked(newFactory);
-        }
-        if(Keyboard.current.lKey.wasPressedThisFrame)
-        {
-            // 测试：按 L 键删除第一个工厂
-            if (factories.Count > 0)
-            {
-                RemoveFactory(factories[0]);
-            }
-        }
-        if(Keyboard.current.iKey.wasPressedThisFrame)
-        {
-            // 测试：按 I 键显示所有工厂数量
-            Debug.Log($"当前工厂数量: {GetFactoryCount()}");
-        }
-        if(Keyboard.current.oKey.wasPressedThisFrame)
-        {
-            // 测试：按 O 键创建酸塔工厂
-            TurnBasedFactory newFactory = CreateFactory("acidTower");
-            OnFactoryObjectClicked(newFactory);
-        }
-        if(Keyboard.current.pKey.wasPressedThisFrame)
-        {
-            // 测试：按 P 键创建湖泊采集工厂
-            TurnBasedFactory newfactor = CreateFactory("lakeTreat");
-            OnFactoryObjectClicked(newfactor);
+        // if(Keyboard.current.jKey.wasPressedThisFrame)
+        // {
+        //     // 测试：按 J 键创建水热发电厂
+        //     TurnBasedFactory newFactory = CreateFactory("hydroThermal");
+        //     OnFactoryObjectClicked(newFactory);
+        // }
+        // if(Keyboard.current.lKey.wasPressedThisFrame)
+        // {
+        //     // 测试：按 L 键删除第一个工厂
+        //     if (factories.Count > 0)
+        //     {
+        //         RemoveFactory(factories[0]);
+        //     }
+        // }
+        // if(Keyboard.current.iKey.wasPressedThisFrame)
+        // {
+        //     // 测试：按 I 键显示所有工厂数量
+        //     Debug.Log($"当前工厂数量: {GetFactoryCount()}");
+        // }
+        // if(Keyboard.current.oKey.wasPressedThisFrame)
+        // {
+        //     // 测试：按 O 键创建酸塔工厂
+        //     TurnBasedFactory newFactory = CreateFactory("acidTower");
+        //     OnFactoryObjectClicked(newFactory);
+        // }
+        // if(Keyboard.current.pKey.wasPressedThisFrame)
+        // {
+        //     // 测试：按 P 键创建湖泊采集工厂
+        //     TurnBasedFactory newfactor = CreateFactory("lakeTreat");
+        //     OnFactoryObjectClicked(newfactor);
             
-        }
-        if(Keyboard.current.kKey.wasPressedThisFrame)
-        {
-            InvestAllFactories();
-        }
-
-        
+        // }
+        // if(Keyboard.current.kKey.wasPressedThisFrame)
+        // {
+        //     InvestAllFactories();
+        // }
     } 
 
     void Start()
@@ -223,65 +221,59 @@ public class GameManager : MonoBehaviour
     /// 更新工厂显示
     void UpdateFactoryDisplay()
     {
-        if (factoryListContainer == null) return;
-
-        // 清空旧的UI
-        foreach (Transform child in factoryListContainer)
-        {
-            Destroy(child.gameObject);
-        }
         factoryUIItems.Clear();
 
-        // 创建工厂UI
+        // 仅同步工厂数据列表（不创建UI）
         factories = new List<TurnBasedFactory>(FindObjectsByType<TurnBasedFactory>(FindObjectsSortMode.None));
-        foreach (var factory in factories)
-        {
-            CreateFactoryItem(factory);
-        }
     }
 
     /// 创建工厂UI项（在放置物体时调用，自动绑定物体）
-    void CreateFactoryItem(TurnBasedFactory factory)
+    public void CreateFactoryItem(GameObject factoryObj)
     {
-        if (factoryItemPrefab == null) return;
+        if (factoryObj == null) return;
+        if (factoryObj.name == "WalkWay") return;
 
-        GameObject item = Instantiate(factoryItemPrefab, factoryListContainer);
-        item.name = factory.factoryName;
-
-        // 设置工厂名称
-        TextMeshProUGUI nameText = item.transform.Find("NameText")?.GetComponent<TextMeshProUGUI>();
-        if (nameText != null)
+        TurnBasedFactory factory = factoryObj.GetComponent<TurnBasedFactory>();
+        if (factory == null)
         {
-            nameText.text = factory.factoryName;
+            string rawName = factoryObj.name;
+            if (!System.Enum.TryParse(rawName, true, out FactoryType factoryType))
+            {
+                Debug.LogWarning($"无法解析工厂类型: {rawName}");
+                return;
+            }
+
+            FactoryInfoData factoryData = FactoryDatabaseLoader.GetFactory(factoryType.ToString());
+            if (factoryData == null)
+            {
+                Debug.LogError($"找不到工厂类型: {factoryType}");
+                return;
+            }
+
+            factory = factoryObj.AddComponent<TurnBasedFactory>();
+            factory.factoryType = factoryType;
+            factory.factoryName = factoryData.factoryName;
+            factory.buildCosts = factoryData.buildCosts;
+            factory.recipes = factoryData.recipes;
+        }
+
+        if (!factories.Contains(factory))
+        {
+            factories.Add(factory);
         }
 
         // 给工厂GameObject添加点击监听（需要Collider组件）
-        // 确保工厂物体有Collider用于接收点击
         if (factory.GetComponent<Collider>() == null && factory.GetComponent<Collider2D>() == null)
         {
-            // 如果没有碰撞体，添加一个BoxCollider
             factory.gameObject.AddComponent<BoxCollider>();
         }
 
-        // 添加点击事件监听脚本
         FactoryClickHandler clickHandler = factory.gameObject.GetComponent<FactoryClickHandler>();
         if (clickHandler == null)
         {
             clickHandler = factory.gameObject.AddComponent<FactoryClickHandler>();
         }
         clickHandler.OnFactoryClicked = () => OnFactoryObjectClicked(factory);
-
-        // 设置状态显示
-        TextMeshProUGUI statusText = item.transform.Find("StatusText")?.GetComponent<TextMeshProUGUI>();
-        if (statusText != null)
-        {
-            statusText.text = factory.GetStatus();
-        }
-
-        factoryUIItems[factory] = item;
-
-        // 订阅工厂状态变化
-        InvokeRepeating(nameof(UpdateFactoryItemStatus), 0.1f, 0.1f);
     }
 
     /// 工厂投料按钮点击

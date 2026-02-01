@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1653899403443625713}
   - component: {fileID: 3770317379024859804}
   - component: {fileID: 3142461883149552826}
+  - component: {fileID: -4703853768733035802}
   m_Layer: 8
   m_Name: FeFac
   m_TagString: Untagged
@@ -112,3 +113,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-4703853768733035802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315912494976341412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432d192441af714449e2e6c41696fda0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnBasedFactory
+  factoryType: 9
+  factoryName: "\u94C1\u56DE\u6536\u5382"
+  buildCosts:
+  - resourceType: 20
+    quantity: 2
+  recipes:
+  - recipeName: 
+    inputs:
+    - resourceType: 18
+      quantity: 3
+    - resourceType: 16
+      quantity: 1
+    outputs:
+    - resourceType: 6
+      quantity: 2
+    - resourceType: 17
+      quantity: 1
+  currentRecipeIndex: 0

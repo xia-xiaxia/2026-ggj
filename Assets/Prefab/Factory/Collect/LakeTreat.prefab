@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6315202168437144683}
   - component: {fileID: 9175244457343418912}
   - component: {fileID: 6745914301288442640}
+  - component: {fileID: -4782365454913803739}
   m_Layer: 8
   m_Name: LakeTreat
   m_TagString: Untagged
@@ -112,3 +113,31 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.01336834, y: 0.01915537, z: 0.052270357}
   m_Center: {x: 0.0000000020954758, y: -0.0016836323, z: 0.015478057}
+--- !u!114 &-4782365454913803739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143401334736171455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432d192441af714449e2e6c41696fda0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnBasedFactory
+  factoryType: 4
+  factoryName: "\u6E56\u6C34\u5904\u7406\u5382"
+  buildCosts:
+  - resourceType: 20
+    quantity: 2
+  recipes:
+  - recipeName: 
+    inputs:
+    - resourceType: 18
+      quantity: 2
+    outputs:
+    - resourceType: 2
+      quantity: 2
+    - resourceType: 5
+      quantity: 1
+  currentRecipeIndex: 0

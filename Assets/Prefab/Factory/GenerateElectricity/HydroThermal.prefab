@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5888042320222388218}
   - component: {fileID: 4552164901393578334}
+  - component: {fileID: 5613107891041572524}
   m_Layer: 8
   m_Name: HydroThermal
   m_TagString: Untagged
@@ -54,6 +55,32 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.69, y: 2.29, z: 2.49}
   m_Center: {x: -0.00095171947, y: 0.19, z: 0.1}
+--- !u!114 &5613107891041572524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7368971683525504577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432d192441af714449e2e6c41696fda0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnBasedFactory
+  factoryType: 0
+  factoryName: "\u6C34\u70ED\u53D1\u7535\u5382"
+  buildCosts:
+  - resourceType: 20
+    quantity: 2
+  - resourceType: 7
+    quantity: 2
+  recipes:
+  - recipeName: 
+    inputs: []
+    outputs:
+    - resourceType: 18
+      quantity: 12
+  currentRecipeIndex: 0
 --- !u!1 &7492277394527548466
 GameObject:
   m_ObjectHideFlags: 0

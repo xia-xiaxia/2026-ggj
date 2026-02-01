@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 562464926218829934}
   - component: {fileID: 8924232634974649467}
   - component: {fileID: 2827315857656926428}
+  - component: {fileID: 8188742263978377}
   m_Layer: 8
   m_Name: AcidTower
   m_TagString: Untagged
@@ -112,3 +113,29 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.02, y: 0.010000003, z: 0.048849113}
   m_Center: {x: 0, y: 0, z: 0.012040895}
+--- !u!114 &8188742263978377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5262420923233739048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432d192441af714449e2e6c41696fda0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnBasedFactory
+  factoryType: 3
+  factoryName: "\u9178\u96FE\u6355\u96C6\u5854"
+  buildCosts:
+  - resourceType: 20
+    quantity: 1
+  - resourceType: 7
+    quantity: 1
+  recipes:
+  - recipeName: 
+    inputs: []
+    outputs:
+    - resourceType: 2
+      quantity: 2
+  currentRecipeIndex: 0

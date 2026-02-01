@@ -144,6 +144,7 @@ public class PlaceManager : MonoBehaviour
                                 }
                         }
                     }
+                    GameManager.Instance.RemoveFactory(target.GetComponent<TurnBasedFactory>());
                     Destroy(target);
                 }
                 return;
@@ -159,7 +160,13 @@ public class PlaceManager : MonoBehaviour
             int top = bottom + size.y - 1;
             if (!Check(left, right, bottom, top))
                 return;
+            if(placePrefab.name != "Walkway")
+            {
+                if(GameManager.Instance.CreateFactory(placePrefab.name) == null)
+                    return;
+            }
             var go = Instantiate(placePrefab, previewObj.transform.position, previewObj.transform.rotation);
+            go.name = placePrefab.name;
             // 放置道路时，更新道路及临路的网格和表现
             if (placeItemListManager.selectedFactory.need == FactoryUIItem.PlaceNeed.None)
             {

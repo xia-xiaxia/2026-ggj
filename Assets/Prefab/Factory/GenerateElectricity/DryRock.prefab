@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 979451661606436508}
   - component: {fileID: 5281348574342099193}
   - component: {fileID: 438269357070619990}
+  - component: {fileID: 6772672267834509205}
   m_Layer: 8
   m_Name: DryRock
   m_TagString: Untagged
@@ -112,3 +113,29 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.02, y: 0.020000005, z: 0.07975466}
   m_Center: {x: -0.0000025904737, y: -0.000002542977, z: -0.005897488}
+--- !u!114 &6772672267834509205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1225442641465252062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432d192441af714449e2e6c41696fda0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnBasedFactory
+  factoryType: 1
+  factoryName: "\u5E72\u70ED\u5CA9\u7535\u5382"
+  buildCosts:
+  - resourceType: 20
+    quantity: 4
+  - resourceType: 8
+    quantity: 3
+  recipes:
+  - recipeName: 
+    inputs: []
+    outputs:
+    - resourceType: 18
+      quantity: 32
+  currentRecipeIndex: 0

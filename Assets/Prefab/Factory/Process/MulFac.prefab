@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6833402217836118410}
   - component: {fileID: 6252977532066026483}
   - component: {fileID: 9011861706622676736}
+  - component: {fileID: 6074672765062334181}
   m_Layer: 8
   m_Name: MulFac
   m_TagString: Untagged
@@ -112,3 +113,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6074672765062334181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7792003991606131334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432d192441af714449e2e6c41696fda0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnBasedFactory
+  factoryType: 11
+  factoryName: "\u8054\u5408\u51B6\u70BC\u5382"
+  buildCosts:
+  - resourceType: 20
+    quantity: 2
+  recipes:
+  - recipeName: 
+    inputs:
+    - resourceType: 18
+      quantity: 2
+    - resourceType: 5
+      quantity: 1
+    outputs:
+    - resourceType: 7
+      quantity: 1
+    - resourceType: 6
+      quantity: 1
+    - resourceType: 9
+      quantity: 1
+    - resourceType: 8
+      quantity: 1
+  currentRecipeIndex: 0

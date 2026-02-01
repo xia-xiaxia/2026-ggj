@@ -24,6 +24,7 @@ public class TurnBasedFactory : MonoBehaviour
     private bool hasProductionToHarvest = false; // 是否有产出待收获
     private int pendingProductionCount = 0; // 本回合投料份数
 
+
     void Start()
     {
         // 订阅回合事件
